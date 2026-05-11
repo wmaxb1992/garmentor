@@ -37,14 +37,26 @@ export type WorkspaceState = {
   pendingImageData: { bytes: Uint8Array; mediaType: string } | null;
 };
 
-const STORAGE_KEY = "garmentor:workspace:v1";
-const STORAGE_VERSION = 1;
+export type Project = {
+  id: string;
+  name: string;
+  createdAt: number;
+  lastModified: number;
+  workspace: WorkspaceState;
+};
+
+const PROJECTS_INDEX_KEY = "garmentor:projects:index";
+const CURRENT_PROJECT_KEY = "garmentor:current-project-id";
+const STORAGE_VERSION = 2;
 const MAX_MODELS = 50;
 const SAVE_DEBOUNCE_MS = 250;
 
-type Persisted = { version: number; state: WorkspaceState };
+type ProjectIndex = {
+  version: number;
+  projects: Array<{ id: string; name: string; lastModified: number }>;
+};
 
-const empty: WorkspaceState = { 
+const emptyWorkspace: WorkspaceState = { 
   models: {}, 
   activeModelId: null,
   isGenerating: false,
@@ -53,26 +65,75 @@ const empty: WorkspaceState = {
   pendingImageData: null,
 };
 
-function load(): WorkspaceState {
-  if (typeof window === "undefined") return empty;
+function getProjectKey(id: string): string {
+  return `garmentor:project:${id}`;
+}
+
+function loadProjectIndex(): ProjectIndex {
+  if (typeof window === "undefined") return { version: STORAGE_VERSION, projects: [] };
   try {
-    const raw = window.localStorage.getItem(STORAGE_KEY);
-    if (!raw) return empty;
-    const parsed = JSON.parse(raw) as Persisted;
-    if (parsed?.version !== STORAGE_VERSION) return empty;
-    return parsed.state ?? empty;
+    const raw = window.localStorage.getItem(PROJECTS_INDEX_KEY);
+    if (!raw) return { version: STORAGE_VERSION, projects: [] };
+    const parsed = JSON.parse(raw) as ProjectIndex;
+    if (parsed?.version !== STORAGE_VERSION) return { version: STORAGE_VERSION, projects: [] };
+    return parsed;
   } catch {
-    return empty;
+    return { version: STORAGE_VERSION, projects: [] };
   }
 }
 
-function save(state: WorkspaceState) {
+function saveProjectIndex(index: ProjectIndex) {
   if (typeof window === "undefined") return;
   try {
-    const payload: Persisted = { version: STORAGE_VERSION, state };
-    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+    window.localStorage.setItem(PROJECTS_INDEX_KEY, JSON.stringify(index));
   } catch {
     // quota exceeded or storage disabled — ignore
+  }
+}
+
+function loadProject(id: string): Project | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const raw = window.localStorage.getItem(getProjectKey(id));
+    if (!raw) return null;
+    return JSON.parse(raw) as Project;
+  } catch {
+    return null;
+  }
+}
+
+function saveProject(project: Project) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(getProjectKey(project.id), JSON.stringify(project));
+    
+    // Update index
+    const index = loadProjectIndex();
+    const existing = index.projects.findIndex(p => p.id === project.id);
+    const entry = { id: project.id, name: project.name, lastModified: project.lastModified };
+    
+    if (existing >= 0) {
+      index.projects[existing] = entry;
+    } else {
+      index.projects.push(entry);
+    }
+    
+    saveProjectIndex(index);
+  } catch {
+    // quota exceeded or storage disabled — ignore
+  }
+}
+
+function deleteProject(id: string) {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.removeItem(getProjectKey(id));
+    
+    const index = loadProjectIndex();
+    index.projects = index.projects.filter(p => p.id !== id);
+    saveProjectIndex(index);
+  } catch {
+    // ignore
   }
 }
 
@@ -87,6 +148,8 @@ function trimToCap(models: Record<string, Model>): Record<string, Model> {
 
 export type WorkspaceContextValue = {
   state: WorkspaceState;
+  currentProject: Project | null;
+  availableProjects: Array<{ id: string; name: string; lastModified: number }>;
   addModel: (input: Omit<Model, "createdAt" | "seams"> & { seams?: Seam[] }) => void;
   setActive: (id: string | null) => void;
   addSeam: (modelId: string, vertexIndices: number[]) => string;
@@ -96,28 +159,59 @@ export type WorkspaceContextValue = {
   setEditing: (isEditing: boolean) => void;
   setPendingImage: (url: string | null, data: { bytes: Uint8Array; mediaType: string } | null) => void;
   approvePendingImage: () => Promise<void>;
+  newProject: () => void;
+  saveCurrentProject: (name?: string) => void;
+  loadProject: (id: string) => void;
+  deleteProject: (id: string) => void;
+  renameProject: (name: string) => void;
 };
 
 const WorkspaceContext = createContext<WorkspaceContextValue | null>(null);
 
 export function WorkspaceProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<WorkspaceState>(empty);
+  const [state, setState] = useState<WorkspaceState>(emptyWorkspace);
+  const [currentProject, setCurrentProject] = useState<Project | null>(null);
+  const [availableProjects, setAvailableProjects] = useState<Array<{ id: string; name: string; lastModified: number }>>([]);
   const hydrated = useRef(false);
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Load available projects on mount
   useEffect(() => {
-    setState(load());
+    const index = loadProjectIndex();
+    setAvailableProjects(index.projects.sort((a, b) => b.lastModified - a.lastModified));
+    
+    // Don't auto-load any project - start with empty workspace
     hydrated.current = true;
   }, []);
 
+  // Auto-save current project when state changes
   useEffect(() => {
-    if (!hydrated.current) return;
+    if (!hydrated.current || !currentProject) return;
+    
     if (saveTimer.current) clearTimeout(saveTimer.current);
-    saveTimer.current = setTimeout(() => save(state), SAVE_DEBOUNCE_MS);
+    saveTimer.current = setTimeout(() => {
+      const updated: Project = {
+        ...currentProject,
+        workspace: state,
+        lastModified: Date.now(),
+      };
+      saveProject(updated);
+      setCurrentProject(updated);
+      
+      // Update available projects list
+      setAvailableProjects(prev => {
+        const filtered = prev.filter(p => p.id !== updated.id);
+        return [
+          { id: updated.id, name: updated.name, lastModified: updated.lastModified },
+          ...filtered,
+        ].sort((a, b) => b.lastModified - a.lastModified);
+      });
+    }, SAVE_DEBOUNCE_MS);
+    
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
-  }, [state]);
+  }, [state, currentProject]);
 
   const addModel = useCallback<WorkspaceContextValue["addModel"]>((input) => {
     setState((prev) => {
@@ -214,16 +308,87 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
   const approvePendingImage = useCallback<WorkspaceContextValue["approvePendingImage"]>(
     async () => {
-      // This will be called by the approve button
-      // The actual 3D generation will be triggered via the chat API
       setState((prev) => ({ ...prev, isGenerating: true }));
     },
     [],
   );
 
+  const newProject = useCallback(() => {
+    setState(emptyWorkspace);
+    setCurrentProject(null);
+  }, []);
+
+  const saveCurrentProject = useCallback((name?: string) => {
+    const projectName = name ?? currentProject?.name ?? "Untitled Project";
+    const now = Date.now();
+    
+    const project: Project = currentProject
+      ? { ...currentProject, name: projectName, workspace: state, lastModified: now }
+      : {
+          id: nanoId(12),
+          name: projectName,
+          createdAt: now,
+          lastModified: now,
+          workspace: state,
+        };
+    
+    saveProject(project);
+    setCurrentProject(project);
+    
+    // Update available projects
+    setAvailableProjects(prev => {
+      const filtered = prev.filter(p => p.id !== project.id);
+      return [
+        { id: project.id, name: project.name, lastModified: project.lastModified },
+        ...filtered,
+      ].sort((a, b) => b.lastModified - a.lastModified);
+    });
+  }, [currentProject, state]);
+
+  const loadProjectCallback = useCallback((id: string) => {
+    const project = loadProject(id);
+    if (!project) return;
+    
+    setState(project.workspace);
+    setCurrentProject(project);
+    
+    // Update last modified
+    const updated = { ...project, lastModified: Date.now() };
+    saveProject(updated);
+    setCurrentProject(updated);
+  }, []);
+
+  const deleteProjectCallback = useCallback((id: string) => {
+    deleteProject(id);
+    setAvailableProjects(prev => prev.filter(p => p.id !== id));
+    
+    if (currentProject?.id === id) {
+      setState(emptyWorkspace);
+      setCurrentProject(null);
+    }
+  }, [currentProject]);
+
+  const renameProject = useCallback((name: string) => {
+    if (!currentProject) return;
+    
+    const updated = { ...currentProject, name, lastModified: Date.now() };
+    saveProject(updated);
+    setCurrentProject(updated);
+    
+    setAvailableProjects(prev => {
+      const filtered = prev.filter(p => p.id !== updated.id);
+      return [
+        { id: updated.id, name: updated.name, lastModified: updated.lastModified },
+        ...filtered,
+      ].sort((a, b) => b.lastModified - a.lastModified);
+    });
+  }, [currentProject]);
+
   const value = useMemo<WorkspaceContextValue>(
     () => ({ 
-      state, 
+      state,
+      currentProject,
+      availableProjects,
       addModel, 
       setActive, 
       addSeam, 
@@ -233,8 +398,31 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       setEditing,
       setPendingImage,
       approvePendingImage,
+      newProject,
+      saveCurrentProject,
+      loadProject: loadProjectCallback,
+      deleteProject: deleteProjectCallback,
+      renameProject,
     }),
-    [state, addModel, setActive, addSeam, removeSeam, clearSeams, setGenerating, setEditing, setPendingImage, approvePendingImage],
+    [
+      state,
+      currentProject,
+      availableProjects,
+      addModel,
+      setActive,
+      addSeam,
+      removeSeam,
+      clearSeams,
+      setGenerating,
+      setEditing,
+      setPendingImage,
+      approvePendingImage,
+      newProject,
+      saveCurrentProject,
+      loadProjectCallback,
+      deleteProjectCallback,
+      renameProject,
+    ],
   );
 
   return (

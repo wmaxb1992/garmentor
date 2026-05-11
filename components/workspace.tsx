@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FlatSketch } from "@/components/flat-sketch";
 import { SeamEditor } from "@/components/seam-editor";
+import { ProjectControls } from "@/components/project-controls";
 import { cn } from "@/lib/utils";
 import { useActiveModel, useWorkspace } from "@/lib/workspace-store";
 
@@ -53,22 +54,32 @@ export function Workspace() {
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 border-b border-zinc-200 bg-white px-4 py-2 dark:border-zinc-800 dark:bg-zinc-950">
-        <div className="min-w-0 flex-1">
-          <div className="truncate text-sm font-medium text-zinc-800 dark:text-zinc-100">
-            {active.description ?? "3D model"}
+        <ProjectControls />
+        <div className="h-4 w-px bg-zinc-300 dark:bg-zinc-700" />
+        {allModels.length > 0 && (
+          <select
+            value={active?.id ?? ""}
+            onChange={(e) => setActive(e.target.value || null)}
+            className="min-w-0 flex-1 truncate rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm text-zinc-800 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
+          >
+            <option value="">Select a model...</option>
+            {allModels.map((m) => (
+              <option key={m.id} value={m.id}>
+                {m.description ?? m.glbUrl.split("/").pop()}
+              </option>
+            ))}
+          </select>
+        )}
+        {active && (
+          <div className="flex items-center gap-1 rounded-md bg-zinc-100 p-0.5 dark:bg-zinc-900">
+            <TabPill active={tab === "seams"} onClick={() => setTab("seams")}>
+              Seam editor
+            </TabPill>
+            <TabPill active={tab === "sketch"} onClick={() => setTab("sketch")}>
+              Flat sketch
+            </TabPill>
           </div>
-          <div className="truncate text-xs text-zinc-500 dark:text-zinc-400">
-            {active.glbUrl.split("/").pop()}
-          </div>
-        </div>
-        <div className="flex items-center gap-1 rounded-md bg-zinc-100 p-0.5 dark:bg-zinc-900">
-          <TabPill active={tab === "seams"} onClick={() => setTab("seams")}>
-            Seam editor
-          </TabPill>
-          <TabPill active={tab === "sketch"} onClick={() => setTab("sketch")}>
-            Flat sketch
-          </TabPill>
-        </div>
+        )}
       </div>
       <div className="flex-1 overflow-hidden">
         {tab === "seams" ? (
