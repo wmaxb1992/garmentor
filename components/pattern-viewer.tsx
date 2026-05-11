@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import { gcdToDxf, panelToPolyline, type DxfUnit } from "@/lib/gcd-to-dxf";
 import type { GcdPattern } from "@/lib/garment-gpt";
 import { useActiveModel, useWorkspace } from "@/lib/workspace-store";
+import { GatesPanel, useGates } from "@/components/gates-panel";
 
 const PALETTE = [
   "#0ea5e9",
@@ -26,6 +27,7 @@ export function PatternViewer() {
   const [unit, setUnit] = useState<DxfUnit>("mm");
   const [selected, setSelected] = useState<string | null>(null);
   const pattern = active?.gcd as GcdPattern | undefined;
+  const gates = useGates(pattern);
 
   const resizePanel = (name: string, newW: number, newH: number) => {
     if (!pattern || !active) return;
@@ -174,12 +176,19 @@ export function PatternViewer() {
           <button
             type="button"
             onClick={downloadDxf}
-            className="rounded-md border border-purple-600 bg-purple-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-purple-700"
+            disabled={!!gates && !gates.pass}
+            title={
+              gates && !gates.pass
+                ? "Manufacturability gates are failing — open the gates panel above for detail."
+                : "Export panels as DXF"
+            }
+            className="rounded-md border border-purple-600 bg-purple-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-purple-700 disabled:cursor-not-allowed disabled:opacity-40"
           >
             Export DXF
           </button>
         </div>
       </div>
+      <GatesPanel result={gates} />
       <div className="flex min-h-0 flex-1">
         <div className="flex-1 overflow-auto bg-zinc-50 p-4 dark:bg-zinc-900">
           <svg

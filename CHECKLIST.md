@@ -239,24 +239,16 @@ Self-correcting pipeline: pattern + mesh + sim fan out concurrently, a critic sc
 - [ ] `components/chat.tsx` `RefineToolPart` renders the per-cycle log + final verdict
 - [ ] System prompt: prefer `refine_pattern` over plain `generate_pattern` when the user supplied a reference measurement
 
-### Phase 6 — Manufacturability gates ⬜
+### Phase 6 — Manufacturability gates ✅ DONE
 
-Three parallel agents that block DXF export if the pattern is unfit for cutting / sewing / costing.
+Three synchronous gates that block DXF export if the pattern is unfit for cutting / sewing / costing. All client-side; runs on every render in `useGates(pattern)`.
 
-- [ ] **Cuttability Agent** (`lib/gates/cuttability.ts`):
-  - Axis-aligned bbox + polygon-SAT overlap test when panels are laid out on a 150 cm × ∞ fabric
-  - Min edge curvature radius ≥ 2 mm
-  - Panel polygon is simple (no self-intersection)
-- [ ] **Yardage Agent** (`lib/gates/yardage.ts`):
-  - Sum each panel's bbox area, divide by fabric width (config var, default 150 cm)
-  - Returns total yardage + cost estimate at `$X / yard`
-  - Flag if over user-set budget
-- [ ] **Stitch Agent** (`lib/gates/stitch.ts`):
-  - For every stitch pair, compare arc-length of the two stitched edges
-  - Reject if mismatch > ±5 %
-- [ ] `lib/gates/run-all.ts` runs the three in `Promise.all`, aggregates `{ pass, failures }`
-- [ ] `components/gates-panel.tsx` — top-of-PatternViewer banner with pass/fail per agent
-- [ ] `Export DXF` button disabled while gates fail; tooltip lists failures
+- [x] **Cuttability** (`lib/gates/cuttability.ts`): polygon-SAT overlap on a tallest-first row-pack at the configured fabric width, min turn radius ≥ 2 mm, simple-polygon check, panel-width-vs-fabric-width.
+- [x] **Yardage** (`lib/gates/yardage.ts`): row-pack length + efficiency %, optional `budgetYards` + `costPerYardUsd`.
+- [x] **Stitch** (`lib/gates/stitch.ts`): every stitched edge pair within ±5 % arc-length parity.
+- [x] `lib/gates/run-all.ts` aggregates `{ pass, cuttability, yardage, stitch }`.
+- [x] `components/gates-panel.tsx` — banner above the SVG canvas: green ✓ / red ✗ pill per gate with hover detail.
+- [x] `Export DXF` button disabled while gates fail; tooltip points at the gates panel.
 
 ### Phase 7 — Multi-view consensus ⬜
 
