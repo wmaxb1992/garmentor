@@ -1,0 +1,9 @@
+[warmup] pre-warming Modal containers in parallel…
+[warmup] edit endpoint -> 200 in 109850ms
+[warmup] mesh endpoint -> 500 in 126026ms
+
+Running 1 test using 1 worker
+
+[e2e] edit tool placeholder visible — Modal edit in flight
+---wc---
+       7 tmp/pw.log

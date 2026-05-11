@@ -1,0 +1,20 @@
+data: {"type":"start"}
+
+data: {"type":"start-step"}
+
+data: {"type":"text-start","id":"0"}
+
+data: {"type":"text-delta","id":"0","delta":"Pong! "}
+
+data: {"type":"text-delta","id":"0","delta":"🏓\n\nReady to help you turn garment photos into 3D models or edit designs."}
+
+data: {"type":"text-delta","id":"0","delta":" Just attach an image when you're ready to get started!"}
+
+data: {"type":"text-end","id":"0"}
+
+data: {"type":"finish-step"}
+
+data: {"type":"finish","finishReason":"stop"}
+
+data: [DONE]
+

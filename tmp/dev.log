@@ -1,0 +1,1873 @@
+$ next dev
+▲ Next.js 16.2.6 (Turbopack)
+- Local:         http://localhost:3002
+- Network:       http://192.168.110.229:3002
+- Environments: .env.local
+✓ Ready in 292ms
+
+ GET / 200 in 247ms (next.js: 100ms, application-code: 147ms)
+ POST /api/chat 200 in 2.7s (next.js: 109ms, application-code: 2.6s)
+ GET / 200 in 36ms (next.js: 4ms, application-code: 33ms)
+ GET / 200 in 20ms (next.js: 2ms, application-code: 17ms)
+✓ Compiled in 337ms
+ POST /api/chat 200 in 46s (next.js: 2ms, application-code: 46s)
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+ POST /api/chat 200 in 26.3s (next.js: 3ms, application-code: 26.3s)
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+✓ Compiled in 17ms
+ GET / 200 in 43ms (next.js: 7ms, application-code: 35ms)
+ GET / 200 in 19ms (next.js: 1511µs, application-code: 18ms)
+ GET / 200 in 27ms (next.js: 10ms, application-code: 17ms)
+ POST /api/chat 200 in 45s (next.js: 5ms, application-code: 45s)
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+ POST /api/chat 200 in 26.2s (next.js: 2ms, application-code: 26.2s)
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+ GET / 200 in 85ms (next.js: 29ms, application-code: 56ms)
+ GET / 200 in 23ms (next.js: 3ms, application-code: 20ms)
+ POST /api/chat 200 in 7.8s (next.js: 7ms, application-code: 7.8s)
+ POST /api/chat 200 in 2.5min (next.js: 15ms, application-code: 2.5min)
+✓ Compiled in 248ms
+ GET / 200 in 75ms (next.js: 15ms, application-code: 60ms)
+✓ Compiled in 128ms
+✓ Compiled in 305ms
+ POST /api/chat 200 in 24.7s (next.js: 6ms, application-code: 24.7s)
+ GET / 200 in 324ms (next.js: 91ms, application-code: 233ms)
+ GET / 200 in 18ms (next.js: 6ms, application-code: 12ms)
+ GET / 200 in 216ms (next.js: 5ms, application-code: 211ms)
+ GET / 200 in 224ms (next.js: 15ms, application-code: 209ms)
+ GET / 200 in 96ms (next.js: 10ms, application-code: 86ms)
+ GET / 200 in 62ms (next.js: 8ms, application-code: 54ms)
+ POST /api/chat 200 in 111s (next.js: 103ms, application-code: 111s)
+ POST /api/chat 200 in 114s (next.js: 4ms, application-code: 114s)
+ GET / 200 in 121ms (next.js: 53ms, application-code: 68ms)
+ POST /api/chat 200 in 2.4min (next.js: 17ms, application-code: 2.4min)
+✓ Compiled in 126ms
+✓ Compiled in 160ms
+✓ Compiled in 31ms
+✓ Compiled in 30ms
+✓ Compiled in 43ms
+✓ Compiled in 32ms
+✓ Compiled in 279ms
+ POST /api/chat 200 in 104s (next.js: 5ms, application-code: 104s)
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+ GET / 200 in 328ms (next.js: 112ms, application-code: 216ms)
+ GET / 200 in 325ms (next.js: 144ms, application-code: 180ms)
+ GET / 200 in 42ms (next.js: 17ms, application-code: 25ms)
+ GET / 200 in 284ms (next.js: 4ms, application-code: 281ms)
+ GET / 200 in 294ms (next.js: 136ms, application-code: 158ms)
+ GET / 200 in 156ms (next.js: 4ms, application-code: 152ms)
+ GET / 200 in 138ms (next.js: 4ms, application-code: 134ms)
+✓ Compiled in 35ms
+✓ Compiled in 257ms
+ GET / 200 in 125ms (next.js: 19ms, application-code: 106ms)
+ GET / 200 in 73ms (next.js: 23ms, application-code: 51ms)
+ POST /api/chat 200 in 2.7min (next.js: 153ms, application-code: 2.7min)
+✓ Compiled in 389ms
+✓ Compiled in 30ms
+✓ Compiled in 17ms
+✓ Compiled in 22ms
+✓ Compiled in 23ms
+✓ Compiled in 864ms
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+ GET / 500 in 3.4s (next.js: 3.0s, application-code: 439ms)
+ GET / 500 in 3.4s (next.js: 3.0s, application-code: 423ms)
+ GET / 500 in 3.4s (next.js: 3.0s, application-code: 422ms)
+ GET / 500 in 3.5s (next.js: 3.0s, application-code: 419ms)
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+ GET / 500 in 78ms (next.js: 45ms, application-code: 32ms)
+ GET / 500 in 82ms (next.js: 27ms, application-code: 55ms)
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+ GET / 500 in 68ms (next.js: 31ms, application-code: 37ms)
+ GET / 500 in 70ms (next.js: 41ms, application-code: 29ms)
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+ GET / 500 in 102ms (next.js: 53ms, application-code: 49ms)
+ GET / 500 in 127ms (next.js: 86ms, application-code: 41ms)
+[browser] Uncaught Error: ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+[browser] Uncaught Error: ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+[browser] Uncaught Error: ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+[browser] Uncaught Error: ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+✓ Compiled in 187ms
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+ GET / 500 in 287ms (next.js: 237ms, application-code: 49ms)
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+ GET / 500 in 25ms (next.js: 13ms, application-code: 11ms)
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+ GET / 500 in 39ms (next.js: 18ms, application-code: 21ms)
+⨯ ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+[browser] Uncaught Error: ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+ GET / 500 in 55ms (next.js: 35ms, application-code: 20ms)
+[browser] Uncaught Error: ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] Uncaught Error: ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+[browser] Uncaught Error: ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+✓ Compiled in 373ms
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+ GET / 200 in 328ms (next.js: 67ms, application-code: 261ms)
+ GET / 200 in 344ms (next.js: 245ms, application-code: 99ms)
+ GET / 200 in 108ms (next.js: 1533µs, application-code: 106ms)
+ GET / 200 in 92ms (next.js: 4ms, application-code: 87ms)
+✓ Compiled in 24ms
+✓ Compiled in 22ms
+✓ Compiled in 161ms
+ GET / 200 in 60ms (next.js: 18ms, application-code: 43ms)
+ GET / 200 in 56ms (next.js: 12ms, application-code: 44ms)
+ GET / 200 in 63ms (next.js: 21ms, application-code: 42ms)
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] ./lib/generate3d.ts
+Code generation for chunk item errored
+An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+
+Caused by:
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Debug info:
+- An error occurred while generating the chunk item [project]/lib/generate3d.ts [app-client] (ecmascript)
+- Execution of <EcmascriptModuleAsset as EcmascriptChunkPlaceable>::chunk_item_content failed
+- Execution of *EcmascriptChunkItemContent::new failed
+- Execution of EcmascriptModuleContent::new failed
+- the chunking context (unknown) does not support external modules (request: node:fs/promises)
+
+Import traces:
+  Client Component Browser:
+    ./lib/generate3d.ts [Client Component Browser]
+    ./components/mockup-panel.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Client Component Browser]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component]
+
+  Client Component SSR:
+    ./lib/generate3d.ts [Client Component SSR]
+    ./components/mockup-panel.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Client Component SSR]
+    ./components/app-shell.tsx [Server Component]
+    ./app/page.tsx [Server Component] 
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+ GET / 200 in 29ms (next.js: 2ms, application-code: 27ms)
+ POST /api/generate-3d 200 in 2.3min (next.js: 356ms, application-code: 2.2min)
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+ POST /api/chat 200 in 2.3min (next.js: 119ms, application-code: 2.3min)
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+ POST /api/chat 200 in 24.2s (next.js: 17ms, application-code: 24.1s)
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+ GET / 200 in 159ms (next.js: 49ms, application-code: 109ms)
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+ GET / 200 in 85ms (next.js: 37ms, application-code: 47ms)
+ POST /api/chat 200 in 2.2min (next.js: 7ms, application-code: 2.2min)
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+✓ Compiled in 135ms
+✓ Compiled in 24ms
+✓ Compiled in 388ms
+✓ Compiled in 87ms
+✓ Compiled in 179ms
+✓ Compiled in 65ms
+ GET / 200 in 100ms (next.js: 43ms, application-code: 58ms)
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+ GET / 200 in 92ms (next.js: 38ms, application-code: 55ms)
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+ POST /api/chat 200 in 2.2min (next.js: 17ms, application-code: 2.2min)
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+✓ Compiled in 190ms
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+ GET / 200 in 133ms (next.js: 73ms, application-code: 60ms)
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+✓ Compiled in 247ms
+ GET / 200 in 207ms (next.js: 49ms, application-code: 157ms)
+ GET / 200 in 245ms (next.js: 48ms, application-code: 196ms)
+ GET / 200 in 128ms (next.js: 14ms, application-code: 114ms)
+ GET / 200 in 131ms (next.js: 3ms, application-code: 128ms)
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+ GET / 200 in 130ms (next.js: 4ms, application-code: 126ms)
+ GET / 200 in 82ms (next.js: 8ms, application-code: 73ms)
+ GET / 200 in 42ms (next.js: 2ms, application-code: 40ms)
+ GET / 200 in 19ms (next.js: 1474µs, application-code: 18ms)
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+ GET / 200 in 453ms (next.js: 411ms, application-code: 41ms)
+ GET / 200 in 452ms (next.js: 367ms, application-code: 85ms)
+ GET / 200 in 486ms (next.js: 452ms, application-code: 34ms)
+[browser] Failed to fetch RSC payload for http://localhost:3002/. Falling back to browser navigation. TypeError: Load failed
+ GET / 200 in 506ms (next.js: 482ms, application-code: 24ms)
+ GET / 200 in 501ms (next.js: 466ms, application-code: 34ms)
+ GET / 200 in 27ms (next.js: 16ms, application-code: 11ms)
+ GET / 200 in 62ms (next.js: 24ms, application-code: 38ms)
+ GET / 200 in 175ms (next.js: 3ms, application-code: 172ms)
+ GET / 200 in 131ms (next.js: 1993µs, application-code: 129ms)
+ GET / 200 in 71ms (next.js: 11ms, application-code: 60ms)
+ GET / 200 in 45ms (next.js: 16ms, application-code: 29ms)
+ GET / 200 in 132ms (next.js: 3ms, application-code: 129ms)
+ GET / 200 in 165ms (next.js: 4ms, application-code: 161ms)
+ GET / 200 in 116ms (next.js: 5ms, application-code: 111ms)
+ GET / 200 in 44ms (next.js: 4ms, application-code: 41ms)
+ GET / 200 in 123ms (next.js: 18ms, application-code: 105ms)
+ GET / 200 in 202ms (next.js: 19ms, application-code: 183ms)
+ GET / 200 in 181ms (next.js: 5ms, application-code: 176ms)
+ GET / 200 in 105ms (next.js: 23ms, application-code: 82ms)
+ GET / 200 in 91ms (next.js: 13ms, application-code: 79ms)
+ GET / 200 in 43ms (next.js: 3ms, application-code: 39ms)
+ GET / 200 in 130ms (next.js: 7ms, application-code: 122ms)
+ GET / 200 in 67ms (next.js: 13ms, application-code: 54ms)

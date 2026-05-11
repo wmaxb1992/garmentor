@@ -1,0 +1,2 @@
+node_modules/@ai-sdk/react/dist/index.d.ts:25:} & Pick<AbstractChat<UI_MESSAGE>, 'sendMessage' | 'regenerate' | 'stop' | 'resumeStream' | 'addToolResult' | 'addToolOutput' | 'addToolApprovalResponse' | 'status' | 'messages' | 'clearError'>;
+---

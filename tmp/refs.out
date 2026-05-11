@@ -1,0 +1,13 @@
+./components/seam-scene.tsx:8:import { extractMergedMesh } from "@/lib/glb-mesh";
+./components/seam-scene.tsx:16:import { sampleVertexLuminanceFromSource } from "@/lib/seam-detect";
+./components/seam-scene.tsx:73:    const merged = extractMergedMesh(scene);
+./components/seam-scene.tsx:100:      sampleVertexLuminanceFromSource(sourceImageUrl, built.merged).then(
+./components/flat-sketch.tsx:5:import { extractMergedMesh } from "@/lib/glb-mesh";
+./components/flat-sketch.tsx:20:    const merged = extractMergedMesh(scene);
+./lib/seam-detect.ts:20:import type { MergedMesh } from "./glb-mesh";
+./lib/seam-detect.ts:38:export async function sampleVertexLuminanceFromSource(
+./lib/seam-detect.ts:40:  merged: MergedMesh,
+./lib/glb-mesh.ts:15:export type MergedMesh = {
+./lib/glb-mesh.ts:77: * extractMergedMesh, in the same order. Use alongside MergedMesh.meshSourceIds
+./lib/glb-mesh.ts:80:export function collectMergedMeshes(root: Object3D): Mesh[] {
+./lib/glb-mesh.ts:84:export function extractMergedMesh(root: Object3D): MergedMesh {

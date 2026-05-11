@@ -1,0 +1,76 @@
+[warmup] pre-warming Modal containers in parallel…
+[warmup] edit endpoint -> 200 in 93370ms
+[warmup] mesh endpoint -> 500 in 127239ms
+
+Running 1 test using 1 worker
+
+[e2e] edit tool placeholder visible — Modal edit in flight
+[e2e] edited mockup ready, href = /generated/5ijgUcDe6DlE.png
+[e2e] 3D tool placeholder visible — Modal mesh in flight
+[console.warning] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[console.warning] [.WebGL-0x11c001c7800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[console.warning] [.WebGL-0x11c001c7800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[console.warning] [.WebGL-0x11c001c7800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[console.warning] [.WebGL-0x11c001c7800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)
+[console.warning] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[console.warning] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[console.warning] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[e2e] GLB ready from edited image, href = /generated/Hm5L13djaelg.glb
+[console.warning] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[console.warning] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[e2e] fabric picker swap OK (default → denim → silk → default)
+[console.warning] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[console.warning] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[console.warning] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[console.warning] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[console.warning] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[console.warning] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+  ✘  1 [chromium] › tests/edit-flow.spec.ts:6:5 › edit jacket image then regenerate 3D from edited mockup (2.2m)
+
+
+  1) [chromium] › tests/edit-flow.spec.ts:6:5 › edit jacket image then regenerate 3D from edited mockup 
+
+    Error: [2mexpect([22m[31mlocator[39m[2m).[22mtoBeEnabled[2m([22m[2m)[22m failed
+
+    Locator:  getByRole('button', { name: /Draw seam|Drawing/ })
+    Expected: enabled
+    Received: disabled
+    Timeout:  60000ms
+
+    Call log:
+    [2m  - Expect "toBeEnabled" with timeout 60000ms[22m
+    [2m  - waiting for getByRole('button', { name: /Draw seam|Drawing/ })[22m
+    [2m    55 × locator resolved to <button disabled type="button" class="rounded-md border px-3 py-1.5 text-sm font-medium transition border-zinc-300 bg-white text-zinc-800 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800">Draw seam</button>[22m
+    [2m       - unexpected value "disabled"[22m
+
+
+      112 |   //    in the workspace and buildSeamGraph has produced a graph.
+      113 |   const drawBtn = page.getByRole("button", { name: /Draw seam|Drawing/ });
+    > 114 |   await expect(drawBtn).toBeEnabled({ timeout: 60_000 });
+          |                         ^
+      115 |   await drawBtn.click();
+      116 |   await expect(drawBtn).toHaveText(/Drawing/);
+      117 |   await drawBtn.click();
+        at /Users/maxwoldenberg/Desktop/garmentor/tests/edit-flow.spec.ts:114:25
+
+    attachment #1: screenshot (image/png) ──────────────────────────────────────────────────────────
+    test-results/edit-flow-edit-jacket-imag-11989-erate-3D-from-edited-mockup-chromium/test-failed-1.png
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    attachment #2: video (video/webm) ──────────────────────────────────────────────────────────────
+    test-results/edit-flow-edit-jacket-imag-11989-erate-3D-from-edited-mockup-chromium/video.webm
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+    Error Context: test-results/edit-flow-edit-jacket-imag-11989-erate-3D-from-edited-mockup-chromium/error-context.md
+
+    attachment #4: trace (application/zip) ─────────────────────────────────────────────────────────
+    test-results/edit-flow-edit-jacket-imag-11989-erate-3D-from-edited-mockup-chromium/trace.zip
+    Usage:
+
+        npx playwright show-trace test-results/edit-flow-edit-jacket-imag-11989-erate-3D-from-edited-mockup-chromium/trace.zip
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────
+
+  1 failed
+    [chromium] › tests/edit-flow.spec.ts:6:5 › edit jacket image then regenerate 3D from edited mockup 
+EXIT=1
