@@ -3,6 +3,7 @@ import { join } from "node:path";
 import { nanoId } from "@/lib/utils";
 import type { GcdPattern } from "@/lib/garment-gpt";
 import { buildClothInput } from "@/lib/stitch-graph";
+import { callRunPodAsync } from "@/lib/runpod-call";
 
 const PUBLIC_DIR = join(process.cwd(), "public", "generated");
 
@@ -37,41 +38,21 @@ export async function drapeWithWarp(
   if (!apiKey) throw new Error("RUNPOD_API_KEY is not set.");
 
   const clothInput = buildClothInput(pattern);
-
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
+  const output = await callRunPodAsync<
+    {
+      cloth_input: ReturnType<typeof buildClothInput>;
+      avatar_glb?: string;
+      fabric: string;
+      substeps: number;
     },
-    body: JSON.stringify({
-      input: {
-        cloth_input: clothInput,
-        avatar_glb: options?.avatarGlbBase64,
-        fabric: options?.fabric ?? "cotton",
-        substeps: options?.substeps ?? 80,
-      },
-    }),
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(
-      `RunPod cloth-sim returned ${res.status}: ${text.slice(0, 500)}`,
-    );
-  }
-  const result = (await res.json()) as {
-    status?: string;
-    error?: string;
-    output?: { draped_glb?: string; metrics?: DrapeMetrics; error?: string };
-  };
-  if (result.status === "FAILED" || result.error) {
-    throw new Error(`cloth-sim failed: ${result.error ?? "unknown"}`);
-  }
-  const output: { draped_glb?: string; metrics?: DrapeMetrics; error?: string } =
-    result.output ??
-    (result as unknown as { draped_glb?: string; metrics?: DrapeMetrics });
-  if (output.error) throw new Error(`cloth-sim error: ${output.error}`);
-  if (!output.draped_glb) throw new Error("cloth-sim response missing draped_glb");
+    { draped_glb?: string; metrics?: DrapeMetrics }
+  >(endpoint, apiKey, {
+    cloth_input: clothInput,
+    avatar_glb: options?.avatarGlbBase64,
+    fabric: options?.fabric ?? "cotton",
+    substeps: options?.substeps ?? 80,
+  }, { label: "cloth-sim", timeoutMs: 20 * 60 * 1000 });
+  if (!output.draped_glb) throw new Error("RunPod cloth-sim: response missing draped_glb");
 
   const bytes = Buffer.from(output.draped_glb, "base64");
   await mkdir(PUBLIC_DIR, { recursive: true });

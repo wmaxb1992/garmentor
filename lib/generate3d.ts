@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { nanoId } from "@/lib/utils";
+import { callRunPodAsync } from "@/lib/runpod-call";
 
 export type Generate3dResult = {
   id: string;
@@ -33,38 +34,14 @@ export async function generate3dFromBytes(
     throw new Error("RUNPOD_API_KEY is not set.");
   }
 
-  const payload = {
-    input: {
-      image: Buffer.from(imageBytes).toString("base64"),
-      remove_background: true,
-    },
-  };
-
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(
-      `RunPod generate endpoint returned ${res.status}: ${text.slice(0, 500)}`,
-    );
-  }
-
-  const result = (await res.json()) as {
-    status?: string;
-    error?: string;
-    output?: { glb?: string; error?: string };
-  };
-  if (result.status === "FAILED" || result.error) {
-    throw new Error(`RunPod 3D generation failed: ${result.error ?? "unknown"}`);
-  }
-  const output = result.output ?? (result as unknown as { glb?: string });
-  if (!output?.glb) throw new Error("RunPod 3D response missing glb");
+  const output = await callRunPodAsync<
+    { image: string; remove_background: boolean },
+    { glb?: string }
+  >(endpoint, apiKey, {
+    image: Buffer.from(imageBytes).toString("base64"),
+    remove_background: true,
+  }, { label: "3d", timeoutMs: 20 * 60 * 1000 });
+  if (!output?.glb) throw new Error("RunPod 3D: response missing glb");
 
   const glbBuffer = Buffer.from(output.glb, "base64");
 

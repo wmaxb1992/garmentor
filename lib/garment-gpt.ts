@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { nanoId } from "@/lib/utils";
+import { callRunPodAsync } from "@/lib/runpod-call";
 
 const PUBLIC_DIR = join(process.cwd(), "public", "generated");
 
@@ -132,40 +133,16 @@ export async function generatePatternFromBytes(
   }
 
   const imageB64 = Buffer.from(imageBytes).toString("base64");
-  const payload = {
-    input: { image: imageB64, media_type: mediaType },
-  };
-
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify(payload),
+  const output = await callRunPodAsync<
+    { image: string; media_type: string },
+    { gcd?: GcdPattern }
+  >(endpoint, apiKey, { image: imageB64, media_type: mediaType }, {
+    label: "pattern",
+    timeoutMs: 20 * 60 * 1000,
   });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(
-      `RunPod pattern endpoint returned ${res.status}: ${text.slice(0, 500)}`,
-    );
-  }
-
-  const result = (await res.json()) as {
-    status?: string;
-    error?: string;
-    output?: { gcd?: GcdPattern; error?: string };
-  };
-  if (result.status === "FAILED" || result.error) {
-    throw new Error(`RunPod generation failed: ${result.error ?? "unknown"}`);
-  }
-  const output: { gcd?: GcdPattern; error?: string } =
-    result.output ??
-    (result as unknown as { gcd?: GcdPattern; error?: string });
-  if (output.error) throw new Error(`RunPod generation error: ${output.error}`);
   const pattern = output.gcd;
   if (!pattern?.pattern?.panels) {
-    throw new Error("RunPod response missing gcd.pattern.panels");
+    throw new Error("RunPod pattern: response missing gcd.pattern.panels");
   }
 
   let scaleApplied: number | undefined;

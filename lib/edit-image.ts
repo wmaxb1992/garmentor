@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import { join } from "node:path";
 import { nanoId } from "@/lib/utils";
+import { callRunPodAsync } from "@/lib/runpod-call";
 
 export type EditImageResult = {
   id: string;
@@ -28,42 +29,16 @@ export async function editGarmentImage(
     throw new Error("RUNPOD_API_KEY is not set.");
   }
 
-  const payload = {
-    input: {
-      image: Buffer.from(imageBytes).toString("base64"),
-      media_type: mediaType,
-      instruction,
-      steps: process.env.E2E_FAST === "1" ? 10 : undefined,
-    },
-  };
-
-  const res = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify(payload),
-  });
-  if (!res.ok) {
-    const text = await res.text().catch(() => "");
-    throw new Error(
-      `RunPod edit endpoint returned ${res.status}: ${text.slice(0, 500)}`,
-    );
-  }
-
-  const result = (await res.json()) as {
-    status?: string;
-    error?: string;
-    output?: { image?: string; media_type?: string; error?: string };
-  };
-  if (result.status === "FAILED" || result.error) {
-    throw new Error(`RunPod edit failed: ${result.error ?? "unknown"}`);
-  }
-  const output: { image?: string; media_type?: string } =
-    result.output ??
-    (result as unknown as { image?: string; media_type?: string });
-  if (!output?.image) throw new Error("RunPod edit response missing image");
+  const output = await callRunPodAsync<
+    { image: string; media_type: string; instruction: string; steps?: number },
+    { image?: string; media_type?: string }
+  >(endpoint, apiKey, {
+    image: Buffer.from(imageBytes).toString("base64"),
+    media_type: mediaType,
+    instruction,
+    steps: process.env.E2E_FAST === "1" ? 10 : undefined,
+  }, { label: "edit", timeoutMs: 15 * 60 * 1000 });
+  if (!output?.image) throw new Error("RunPod edit: response missing image");
 
   const outBytes = Buffer.from(output.image, "base64");
   const outMediaType = output.media_type ?? "image/png";

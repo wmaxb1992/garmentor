@@ -28,9 +28,13 @@ RUN pip install --no-cache-dir \
     torch==2.4.0 torchvision==0.19.0 --index-url https://download.pytorch.org/whl/cu121
 
 # TripoSR pinned to upstream main; deps from its setup.py.
-RUN git clone --depth 1 https://github.com/VAST-AI-Research/TripoSR.git /workspace/TripoSR \
-    && pip install --no-cache-dir -r /workspace/TripoSR/requirements.txt \
-    && pip install --no-cache-dir /workspace/TripoSR
+# The new pip resolver hits an internal AssertionError on TripoSR's req set —
+# fall back to the legacy resolver, which handles it cleanly.
+RUN pip install --no-cache-dir --upgrade "pip<24" \
+    && git clone --depth 1 https://github.com/VAST-AI-Research/TripoSR.git /workspace/TripoSR \
+    && pip install --no-cache-dir --use-deprecated=legacy-resolver \
+       -r /workspace/TripoSR/requirements.txt \
+    && pip install --no-cache-dir --use-deprecated=legacy-resolver /workspace/TripoSR
 
 RUN pip install --no-cache-dir \
     runpod==1.7.0 \
