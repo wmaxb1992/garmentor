@@ -18,10 +18,15 @@ ENV DEBIAN_FRONTEND=noninteractive \
     HF_HUB_ENABLE_HF_TRANSFER=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git build-essential python3.10 python3.10-venv python3-pip \
-    libgl1 libglib2.0-0 \
+    git build-essential software-properties-common curl \
+    libgl1 libglib2.0-0 ca-certificates \
+    && add-apt-repository -y ppa:deadsnakes/ppa \
+    && apt-get update && apt-get install -y --no-install-recommends \
+       python3.11 python3.11-venv python3.11-dev python3.11-distutils \
     && rm -rf /var/lib/apt/lists/* \
-    && ln -sf /usr/bin/python3.10 /usr/bin/python
+    && ln -sf /usr/bin/python3.11 /usr/bin/python \
+    && ln -sf /usr/bin/python3.11 /usr/bin/python3 \
+    && curl -sS https://bootstrap.pypa.io/get-pip.py | python3.11
 
 WORKDIR /workspace
 
