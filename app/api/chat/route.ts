@@ -1,4 +1,4 @@
-import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
+import { anthropic } from "@ai-sdk/anthropic";
 import {
   convertToModelMessages,
   stepCountIs,
@@ -20,7 +20,7 @@ import { nanoId } from "@/lib/utils";
 export const maxDuration = 600;
 export const runtime = "nodejs";
 
-const MODEL_ID = process.env.CHAT_MODEL ?? "qwen/qwen2.5-vl-7b-instruct";
+const MODEL_ID = process.env.CHAT_MODEL ?? "claude-opus-4-7";
 
 const SYSTEM_PROMPT = `You are Garmentor, an assistant that turns garment photos into measurement-accurate 3D models, iterates on the design via image edits, and produces flat sewing patterns (DXF) via a dedicated pattern generator.
 
@@ -113,44 +113,12 @@ async function resolveImage(
   return fallback;
 }
 
-function getChatProvider() {
-  const baseURL = process.env.RUNPOD_CHAT_BASE_URL;
-  const apiKey = process.env.RUNPOD_API_KEY;
-  if (!baseURL) {
-    throw new Error(
-      "RUNPOD_CHAT_BASE_URL is not set. Deploy runpod/chat-vlm/ and set it (the OpenAI-compatible /v1 base URL) in .env.local.",
-    );
-  }
-  return createOpenAICompatible({
-    name: "runpod",
-    baseURL,
-    headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : undefined,
-  });
-}
-
 export async function POST(req: Request) {
   const { messages }: { messages: UIMessage[] } = await req.json();
   const latestImage = extractLatestImage(messages);
-  const provider = getChatProvider();
 
-  console.log("[chat] model:", MODEL_ID, "baseURL:", process.env.RUNPOD_CHAT_BASE_URL);
-  // DEBUG: tools disabled to isolate streaming issue
-  if (process.env.CHAT_DEBUG_NO_TOOLS === "1") {
-    const r = streamText({
-      model: provider.chatModel(MODEL_ID),
-      system: "You are a helpful assistant.",
-      messages: await convertToModelMessages(messages),
-      onFinish: ({ text, finishReason, usage }) => {
-        console.log("[chat-debug] onFinish:", { textLen: text?.length, finishReason, usage });
-      },
-      onError: ({ error }) => {
-        console.error("[chat-debug] onError:", error);
-      },
-    });
-    return r.toUIMessageStreamResponse();
-  }
   const result = streamText({
-    model: provider.chatModel(MODEL_ID),
+    model: anthropic(MODEL_ID),
     system: SYSTEM_PROMPT,
     messages: await convertToModelMessages(messages),
     stopWhen: stepCountIs(4),

@@ -26,7 +26,7 @@ photo ──► [GarmentGPT]    ──►  2D panels (GCD JSON)  ──►  DXF 
 
 ## 1. Hard rules (immutable — agent must obey without explicit override)
 
-1. **No external paid AI APIs.** Every model call goes to a RunPod endpoint owned by the user. No Anthropic, OpenAI, Modal, HuggingFace inference API, etc. HuggingFace as a *weight host* at build time is fine.
+1. **Inference policy.** Chat = **Anthropic API** (`claude-opus-4-7`, set via `CHAT_MODEL`). All other inference (pattern, 3D mesh, image edit, cloth-sim) stays on user-owned RunPod endpoints. Rationale: RunPod's `worker-v1-vllm:v2.18.1` doesn't reliably surface the hermes tool-call parser, so AI-SDK `tools:` requests 500/hang; Claude's tool calling is rock-solid.
 2. **Bun only.** `bun add` / `bun remove` / `bun run`. Never npm / yarn / pnpm. Never hand-edit `package.json` `dependencies`.
 3. **No new heavy deps.** No shadcn, Radix, MUI, Chakra, styled-components, Redux, Zustand, Tanstack Query, Prisma, NextAuth. Plain Tailwind + React state + AI SDK v6 is enough.
 4. **Web tier on Cloudflare.** `open-next.config.ts` is the deploy. Never propose Vercel / a Pod-hosted web tier.
@@ -162,7 +162,7 @@ All endpoints: `Min Workers 0`, `FlashBoot ✅`, `Idle Timeout 10s`. Cost = $0 w
 
 | Endpoint | Image | GPU | What it does | Env var |
 |---|---|---|---|---|
-| `garmentor-chat-vlm` | `runpod/worker-v1-vllm:v2.18.1` | L40S / A100 / H100 | Qwen2.5-VL-7B via OpenAI-compatible API with hermes tool parser | `RUNPOD_CHAT_BASE_URL`, `CHAT_MODEL` |
+| (Anthropic API, not RunPod) | — | — | Chat assistant — `claude-opus-4-7` (env-configurable). Tools land server-side via AI SDK v6. | `ANTHROPIC_API_KEY`, `CHAT_MODEL` |
 | `garmentor-pattern` | `ghcr.io/<owner>/garmentor-pattern` | RTX 4090 / L40S / A100 | GarmentGPT (VLM + VQ-VAE) → GCD panels | `RUNPOD_PATTERN_ENDPOINT_URL` |
 | `garmentor-3d` | `ghcr.io/<owner>/garmentor-3d` | RTX 4090 / L40S / A4000 | TripoSR → textured GLB | `RUNPOD_GENERATE_ENDPOINT_URL` |
 | `garmentor-flux-edit` | `ghcr.io/<owner>/garmentor-flux-edit` | RTX 4090 / L40S | FLUX.1-schnell image-to-image | `RUNPOD_EDIT_ENDPOINT_URL` |
