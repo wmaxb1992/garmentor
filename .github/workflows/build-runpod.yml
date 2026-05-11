@@ -6,7 +6,7 @@ on:
     paths:
       - "runpod/garment-gpt/**"
       - "runpod/flux-edit/**"
-      - "runpod/spar3d/**"
+      - "runpod/triposr/**"
       - "runpod/cloth-sim/**"
       - ".github/workflows/build-runpod.yml"
   workflow_dispatch:
@@ -28,8 +28,8 @@ jobs:
           - name: flux-edit
             context: runpod/flux-edit
             image: garmentor-flux-edit
-          - name: spar3d
-            context: runpod/spar3d
+          - name: triposr
+            context: runpod/triposr
             image: garmentor-3d
           - name: cloth-sim
             context: runpod/cloth-sim
