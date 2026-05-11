@@ -30,7 +30,12 @@ import sys
 
 sys.path.insert(0, "/workspace/garment-gpt")
 
-from main import GarmentPredictor  # type: ignore
+# Defer `from main import GarmentPredictor` until the first request — its
+# transitive imports (vllm, llamafactory, transformers, torch.cuda init)
+# can take 30+ seconds and abort the whole worker if anything's mismatched.
+# Importing lazily means the worker reaches ready quickly and any crash
+# shows up as a clean job error instead of a worker crash-loop.
+GarmentPredictor = None  # type: ignore[assignment]
 
 
 CHECKPOINT_DIR = os.environ.get("GARMENT_GPT_CHECKPOINTS", "/workspace/checkpoints")
@@ -61,13 +66,16 @@ RT_CONFIG = "/workspace/garment-gpt/configs/config_rt_euler.yaml"
 DEVICE = os.environ.get("GARMENT_GPT_DEVICE", "cuda:0")
 
 
-_predictor: GarmentPredictor | None = None
+_predictor = None  # type: ignore[var-annotated]
 
 
-def _get_predictor() -> GarmentPredictor:
-    global _predictor
+def _get_predictor():
+    global _predictor, GarmentPredictor
     if _predictor is None:
         _ensure_checkpoints()
+        if GarmentPredictor is None:
+            from main import GarmentPredictor as _GP  # type: ignore
+            GarmentPredictor = _GP  # type: ignore[assignment]
         _predictor = GarmentPredictor(
             llm_model_path=LLM_PATH,
             codec_config_path=CODEC_CONFIG,
