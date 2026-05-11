@@ -168,7 +168,10 @@ export function Chat() {
                         />
                       );
                     }
-                    if (part.type === "tool-generate_pattern") {
+                    if (
+                      part.type === "tool-generate_pattern" ||
+                      part.type === "tool-generate_pattern_multiview"
+                    ) {
                       return (
                         <PatternToolPart
                           key={i}

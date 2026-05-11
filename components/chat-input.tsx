@@ -12,10 +12,12 @@ export type ChatInputProps = {
   status: "submitted" | "streaming" | "ready" | "error";
 };
 
+const MAX_FILES = 3;
+
 export function ChatInput({ disabled, onSubmit, onStop, status }: ChatInputProps) {
   const [text, setText] = useState("");
   const [files, setFiles] = useState<FileList | undefined>(undefined);
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [previews, setPreviews] = useState<string[]>([]);
   const fileRef = useRef<HTMLInputElement>(null);
   const textRef = useRef<HTMLTextAreaElement>(null);
   const { setPendingImage } = useWorkspace();
@@ -25,28 +27,33 @@ export function ChatInput({ disabled, onSubmit, onStop, status }: ChatInputProps
   const onFiles = async (next: FileList | null) => {
     if (!next || next.length === 0) {
       setFiles(undefined);
-      setPreviewUrl(null);
+      setPreviews([]);
       setPendingImage(null, null);
       return;
     }
-    setFiles(next);
-    const f = next[0];
-    if (f.type.startsWith("image/")) {
-      const url = URL.createObjectURL(f);
-      setPreviewUrl(url);
-      
-      // Read file as bytes and set in workspace
-      const arrayBuffer = await f.arrayBuffer();
-      const bytes = new Uint8Array(arrayBuffer);
-      setPendingImage(url, { bytes, mediaType: f.type });
-    } else {
-      setPreviewUrl(null);
+    // Cap at MAX_FILES.
+    const arr = Array.from(next).slice(0, MAX_FILES).filter((f) => f.type.startsWith("image/"));
+    if (arr.length === 0) {
+      setFiles(undefined);
+      setPreviews([]);
+      return;
     }
+    const dt = new DataTransfer();
+    arr.forEach((f) => dt.items.add(f));
+    setFiles(dt.files);
+    setPreviews(arr.map((f) => URL.createObjectURL(f)));
+    // setPendingImage tracks the first file for the mockup panel.
+    const first = arr[0];
+    const ab = await first.arrayBuffer();
+    setPendingImage(URL.createObjectURL(first), {
+      bytes: new Uint8Array(ab),
+      mediaType: first.type,
+    });
   };
 
   const clearFile = () => {
     setFiles(undefined);
-    setPreviewUrl(null);
+    setPreviews([]);
     setPendingImage(null, null);
     if (fileRef.current) fileRef.current.value = "";
   };
@@ -68,19 +75,22 @@ export function ChatInput({ disabled, onSubmit, onStop, status }: ChatInputProps
       className="p-3"
     >
       <div className="flex items-end gap-2">
-        {previewUrl && (
-          <div className="relative mb-1">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={previewUrl}
-              alt="attachment preview"
-              className="h-12 w-12 rounded-lg object-cover"
-            />
+        {previews.length > 0 && (
+          <div className="mb-1 flex items-center gap-1.5">
+            {previews.map((url, i) => (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                key={url}
+                src={url}
+                alt={`attachment ${i + 1}`}
+                className="h-12 w-12 rounded-lg object-cover"
+              />
+            ))}
             <button
               type="button"
               onClick={clearFile}
-              className="absolute -right-1 -top-1 rounded-full bg-zinc-900 p-0.5 text-white shadow hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900"
-              aria-label="Remove attachment"
+              className="rounded-full bg-zinc-900 p-0.5 text-white shadow hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900"
+              aria-label="Remove attachments"
             >
               <X className="h-3 w-3" />
             </button>
@@ -100,6 +110,7 @@ export function ChatInput({ disabled, onSubmit, onStop, status }: ChatInputProps
             ref={fileRef}
             type="file"
             accept="image/*"
+            multiple
             className="hidden"
             onChange={(e) => onFiles(e.target.files)}
           />

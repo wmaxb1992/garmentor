@@ -250,15 +250,15 @@ Three synchronous gates that block DXF export if the pattern is unfit for cuttin
 - [x] `components/gates-panel.tsx` — banner above the SVG canvas: green ✓ / red ✗ pill per gate with hover detail.
 - [x] `Export DXF` button disabled while gates fail; tooltip points at the gates panel.
 
-### Phase 7 — Multi-view consensus ⬜
+### Phase 7 — Multi-view consensus ✅ DONE
 
-If the user attaches 2 or 3 photos (front / back / side), fan out a Pattern Agent per view and reconcile.
+When the user attaches 2-3 photos (front / back / side), one Pattern Agent runs per view in parallel; a reconciler merges them.
 
-- [ ] `components/chat-input.tsx` — accept up to 3 image files; thumbnails row
-- [ ] `/api/chat` `generate_pattern_multiview` tool — calls GarmentGPT once per attached image in parallel
-- [ ] `lib/agents/reconciler.ts` — matches panels across views by name + topology, picks the median W × H per shared panel, keeps unique panels from each view
-- [ ] Reconciled GCD is what passes to cloth-sim / DXF
-- [ ] UI surfaces "merged from N views" in the PatternToolPart with hover detail
+- [x] `components/chat-input.tsx` accepts up to 3 image files with thumbnail row; `multiple` on the file input
+- [x] `/api/chat` `generate_pattern_multiview` tool fans out `generatePatternFromBytes` across every attached image via `Promise.all`, then reconciles
+- [x] `lib/agents/reconciler.ts` — median-W×H consensus per shared panel name, union of stitches, preserves unique panels from each view
+- [x] Reconciled GCD is what gets passed to cloth-sim / DXF / refine_pattern
+- [x] `description` carries "merged from N views" so the chat result surfaces the view count
 
 ---
 

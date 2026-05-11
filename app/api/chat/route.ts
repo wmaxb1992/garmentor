@@ -9,7 +9,8 @@ import {
 import { z } from "zod";
 import { dataUrlToBytes, generate3dFromBytes } from "@/lib/generate3d";
 import { editGarmentImage, readPublicGeneratedFile } from "@/lib/edit-image";
-import { generatePatternFromBytes } from "@/lib/garment-gpt";
+import { generatePatternFromBytes, type GcdPattern } from "@/lib/garment-gpt";
+import { reconcilePatterns } from "@/lib/agents/reconciler";
 import { drapeWithWarp } from "@/lib/cloth-sim";
 import { refinePattern } from "@/lib/workflow/refine-pattern";
 import { readFile, writeFile } from "node:fs/promises";
@@ -29,6 +30,7 @@ Tools available:
 - \`edit_garment_image\` — natural-language edit on a photo (e.g. "change patch pockets to welt pockets") returning a new image.
 - \`drape_pattern\` — given a previously generated pattern, runs an NVIDIA Warp XPBD cloth simulation to drape the stitched panels on an avatar. Returns a draped GLB + fit metrics (stretch, compression). Call this when the user wants to validate fit, see the garment "on body", or detect pulling/excess fabric. Requires a prior \`generate_pattern\` call; pass the resulting \`patternId\`.
 - \`refine_pattern\` — agentic refinement loop: drape → critic → grade-delta → re-drape, up to 3 cycles. Use when the user supplies a reference measurement (e.g. "back length 72 cm") AND wants the system to self-correct until fit converges. Pass the prior \`patternId\` + \`referenceMeasurement\`. Returns the converged pattern + drape + per-cycle history.
+- \`generate_pattern_multiview\` — when the user attaches 2-3 photos of different views (front / back / side), fans out per-view pattern generation in parallel and reconciles into a single consensus pattern. Higher accuracy than single-view. Use instead of generate_pattern whenever multiple images are attached.
 
 Tool-firing policy:
 - When the user wants both the pattern and a preview (the typical case after attaching a photo), call \`generate_pattern\` AND \`generate_3d_model\` IN PARALLEL in the same step. They share the source image and both results bind to the same workspace item.
@@ -52,6 +54,27 @@ Behavior:
 - Be concise.`;
 
 type ImageBlob = { bytes: Uint8Array; mediaType: string };
+
+function extractLatestImages(messages: UIMessage[]): ImageBlob[] {
+  // Returns ALL image data URLs attached to the latest user message.
+  for (let i = messages.length - 1; i >= 0; i--) {
+    const msg = messages[i];
+    if (msg.role !== "user") continue;
+    const out: ImageBlob[] = [];
+    for (const part of msg.parts ?? []) {
+      const p = part as { type: string; url?: string; mediaType?: string };
+      if (
+        p.type === "file" &&
+        p.url?.startsWith("data:") &&
+        p.mediaType?.startsWith("image/")
+      ) {
+        out.push(dataUrlToBytes(p.url));
+      }
+    }
+    if (out.length > 0) return out;
+  }
+  return [];
+}
 
 function extractLatestImage(messages: UIMessage[]): ImageBlob | null {
   for (let i = messages.length - 1; i >= 0; i--) {
@@ -229,6 +252,65 @@ export async function POST(req: Request) {
               bytes: out.bytes,
               description,
               sourceImageUrl: out.sourceImageUrl,
+            };
+          } catch (err) {
+            return {
+              ok: false as const,
+              error: err instanceof Error ? err.message : String(err),
+            };
+          }
+        },
+      }),
+      generate_pattern_multiview: tool({
+        description:
+          "Generate one pattern per attached image in parallel (front / back / side photos), then reconcile into a single consensus pattern. Use this when the user has attached 2-3 garment photos of different views. Returns the merged pattern.",
+        inputSchema: z.object({
+          description: z.string().describe("Short description for logging."),
+          referenceMeasurement: z
+            .object({
+              kind: z.enum(["back_length", "chest_girth", "total_width"]),
+              valueCm: z.number().positive(),
+            })
+            .optional(),
+        }),
+        execute: async ({ description, referenceMeasurement }) => {
+          const images = extractLatestImages(messages);
+          if (images.length === 0) {
+            return {
+              ok: false as const,
+              error: "No images found. Attach 2-3 garment photos and try again.",
+            };
+          }
+          if (images.length === 1) {
+            return {
+              ok: false as const,
+              error: "Only one image attached — use generate_pattern instead, or attach 2-3 views.",
+            };
+          }
+          try {
+            const results = await Promise.all(
+              images.map((img) =>
+                generatePatternFromBytes(img.bytes, img.mediaType, referenceMeasurement),
+              ),
+            );
+            const merged: GcdPattern = reconcilePatterns(results.map((r) => r.pattern));
+            // Persist the reconciled pattern.
+            const id = nanoId();
+            const filename = `${id}.gcd.json`;
+            await writeFile(
+              join(process.cwd(), "public", "generated", filename),
+              JSON.stringify(merged),
+              "utf8",
+            );
+            return {
+              ok: true as const,
+              id,
+              gcdUrl: `/generated/${filename}`,
+              sourceImageUrl: results[0].sourceImageUrl,
+              bytes: Buffer.byteLength(JSON.stringify(merged), "utf8"),
+              panelCount: Object.keys(merged.pattern.panels).length,
+              viewCount: results.length,
+              description: `${description} (merged from ${results.length} views)`,
             };
           } catch (err) {
             return {
