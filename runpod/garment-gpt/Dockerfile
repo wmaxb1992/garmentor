@@ -43,7 +43,11 @@ RUN pip install --no-cache-dir \
     fire \
     pyyaml \
     pillow \
-    numpy
+    numpy \
+    tqdm \
+    einops \
+    vector-quantize-pytorch \
+    matplotlib
 
 # LLaMA-Factory is required for tokenizer/template helpers used by main.py.
 RUN git clone --depth 1 https://github.com/hiyouga/LLaMA-Factory.git /workspace/LLaMA-Factory \
