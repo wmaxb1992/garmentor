@@ -29,32 +29,65 @@ export function PatternViewer() {
   const pattern = active?.gcd as GcdPattern | undefined;
   const gates = useGates(pattern);
   const history = useRef<GcdPattern[]>([]);
+  const redoStack = useRef<GcdPattern[]>([]);
 
   const commit = (next: GcdPattern) => {
     if (!active) return;
     if (pattern) history.current.push(pattern);
     if (history.current.length > 25) history.current.shift();
+    redoStack.current.length = 0; // any new commit invalidates redo
     attachPattern(active.id, active.gcdUrl ?? "", next);
   };
 
   const undo = () => {
     const prev = history.current.pop();
     if (prev && active) {
+      if (pattern) redoStack.current.push(pattern);
       attachPattern(active.id, active.gcdUrl ?? "", prev);
+    }
+  };
+
+  const redo = () => {
+    const next = redoStack.current.pop();
+    if (next && active) {
+      if (pattern) history.current.push(pattern);
+      attachPattern(active.id, active.gcdUrl ?? "", next);
     }
   };
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
+      const meta = e.metaKey || e.ctrlKey;
+      if (meta && e.key.toLowerCase() === "z" && !e.shiftKey) {
         e.preventDefault();
         undo();
+        return;
+      }
+      if (meta && e.key.toLowerCase() === "z" && e.shiftKey) {
+        e.preventDefault();
+        redo();
+        return;
+      }
+      // Don't intercept arrow keys when typing in a panel spec input.
+      const tag = (e.target as HTMLElement | null)?.tagName?.toLowerCase();
+      if (tag === "input" || tag === "textarea") return;
+      if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+        if (!pattern) return;
+        const order = pattern.pattern.panel_order?.length
+          ? pattern.pattern.panel_order
+          : Object.keys(pattern.pattern.panels);
+        if (order.length === 0) return;
+        const idx = selected ? order.indexOf(selected) : -1;
+        const step = e.key === "ArrowDown" ? 1 : -1;
+        const next = order[(idx + step + order.length) % order.length];
+        setSelected(next);
+        e.preventDefault();
       }
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [active?.id]);
+  }, [active?.id, pattern, selected]);
 
   const resizePanel = (name: string, newW: number, newH: number) => {
     if (!pattern || !active) return;

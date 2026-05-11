@@ -271,8 +271,10 @@ Smaller-scope improvements that get layered on top of Phases 1-7. Not gated; mer
 - [x] **Actionable gate deltas**: `runAllGates` now returns `proposedDeltas` mapping stitch-mismatches → length corrections and oversized panels → width corrections. `applyGateFixes(pattern, gates)` returns a patched GCD.
 - [x] **Apply suggested fixes button**: the gates banner exposes an amber "Apply suggested fixes (N)" button that pushes the modifier output into the workspace store. Pairs with undo (cmd/ctrl-Z).
 - [x] **Spec-edit undo**: 25-step history stack in `PatternViewer`. cmd/ctrl-Z rolls back any panel resize or "apply fixes" action.
-- [ ] **Spec-edit redo** (cmd/ctrl-shift-Z).
-- [ ] **Keyboard navigation**: arrow keys to cycle the selected panel.
+- [x] **Spec-edit redo** (cmd/ctrl-shift-Z).
+- [x] **Keyboard navigation**: ArrowUp / ArrowDown cycle the selected panel (when not typing in an input).
+- [x] **Playwright smoke** for the Pattern tab — loads via PasswordGate, injects fixture via the React fiber walk, asserts panel list + gates banner + Export DXF render. 951ms run.
+- [x] **`bun test` + `bun test:e2e` scripts** in package.json.
 - [ ] **Mesh silhouette overlay** in Pattern tab — project the TripoSR GLB front-view silhouette behind the GCD panels at the same scale so the user can eyeball pattern-vs-mesh fit without leaving the tab.
 - [ ] **Playwright smoke** that loads the app behind PasswordGate, injects a fixture model via the workspace context, and verifies all 4 tabs render.
 - [ ] **DXF in-browser preview** before download — render the LWPOLYLINE entities client-side as a confirmation view.
