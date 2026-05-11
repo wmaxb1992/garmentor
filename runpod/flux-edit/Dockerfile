@@ -1,4 +1,6 @@
-# FLUX.1-schnell image-to-image edit on RunPod Serverless.
+# Image-to-image garment edit on RunPod Serverless.
+# Default model: stabilityai/sdxl-turbo (ungated). FLUX.1-schnell still
+# supported via EDIT_MODEL_ID env var (requires HF_TOKEN since it's gated).
 #
 # Build:
 #   cd runpod/flux-edit

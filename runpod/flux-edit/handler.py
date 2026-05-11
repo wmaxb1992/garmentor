@@ -1,10 +1,15 @@
-"""RunPod Serverless handler for FLUX.1-schnell image-to-image editing.
+"""RunPod Serverless handler for image-to-image garment editing.
+
+Default model: SDXL Turbo (`stabilityai/sdxl-turbo`) — ungated, MIT-style
+license, 1-4 step distilled. To switch back to FLUX.1-schnell, set env
+`EDIT_MODEL_ID=black-forest-labs/FLUX.1-schnell` and supply HF_TOKEN since
+that repo is gated.
 
 input:
   image:        base64 PNG/JPEG bytes
   media_type:   e.g. "image/png" (optional)
   instruction:  natural language edit instruction
-  steps:        int, optional (defaults to 4 — schnell is a 4-step distilled model)
+  steps:        int, optional (defaults to 4)
   strength:     float 0-1, optional (defaults to 0.85)
 
 output:
@@ -21,22 +26,35 @@ from typing import Any, Dict
 
 import runpod
 import torch
-from diffusers import FluxImg2ImgPipeline
 from PIL import Image
 
 
-MODEL_ID = os.environ.get("FLUX_MODEL_ID", "black-forest-labs/FLUX.1-schnell")
+MODEL_ID = os.environ.get(
+    "EDIT_MODEL_ID", os.environ.get("FLUX_MODEL_ID", "stabilityai/sdxl-turbo"),
+)
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-DTYPE = torch.bfloat16
+DTYPE = torch.float16
 
 
-_pipe: FluxImg2ImgPipeline | None = None
+_pipe = None  # type: ignore[var-annotated]
 
 
-def _get_pipe() -> FluxImg2ImgPipeline:
+def _get_pipe():
     global _pipe
     if _pipe is None:
-        _pipe = FluxImg2ImgPipeline.from_pretrained(MODEL_ID, torch_dtype=DTYPE)
+        # Lazy import — diffusers + the right pipeline class for the model.
+        if "flux" in MODEL_ID.lower():
+            from diffusers import FluxImg2ImgPipeline as PipeClass
+            dtype = torch.bfloat16
+        else:
+            # SDXL / SDXL-Turbo image-to-image
+            from diffusers import AutoPipelineForImage2Image as PipeClass
+            dtype = DTYPE
+        _pipe = PipeClass.from_pretrained(
+            MODEL_ID,
+            torch_dtype=dtype,
+            variant="fp16" if dtype == torch.float16 else None,
+        )
         _pipe.to(DEVICE)
         _pipe.set_progress_bar_config(disable=True)
     return _pipe
@@ -61,6 +79,12 @@ def handler(event: Dict[str, Any]) -> Dict[str, Any]:
 
     try:
         src = _decode_image(image_b64)
+        # SDXL Turbo expects 512x512 input typically; we keep aspect & cap.
+        max_side = 768
+        w, h = src.size
+        if max(w, h) > max_side:
+            scale = max_side / max(w, h)
+            src = src.resize((int(w * scale), int(h * scale)))
     except Exception as e:
         return {"error": f"Failed to decode image: {e!s}"}
 
@@ -69,18 +93,20 @@ def handler(event: Dict[str, Any]) -> Dict[str, Any]:
 
     try:
         pipe = _get_pipe()
-        out = pipe(
+        kwargs: Dict[str, Any] = dict(
             prompt=instruction,
             image=src,
             num_inference_steps=steps,
             strength=strength,
-            guidance_scale=0.0,  # schnell uses guidance_scale=0
         )
+        # FLUX uses guidance_scale=0, SDXL Turbo uses ~0.0 too. Both fine.
+        kwargs["guidance_scale"] = 0.0
+        out = pipe(**kwargs)
         edited = out.images[0]
     except Exception as e:
-        return {"error": f"FLUX edit failed: {e!s}"}
+        return {"error": f"Edit failed ({MODEL_ID}): {e!s}"}
 
-    return {"image": _encode_image(edited), "media_type": "image/png"}
+    return {"image": _encode_image(edited), "media_type": "image/png", "model": MODEL_ID}
 
 
 runpod.serverless.start({"handler": handler})
