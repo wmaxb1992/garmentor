@@ -27,7 +27,7 @@ Image quality ranking, best to worst, for garment 3D reconstruction:
 5. Hanger shot. Distorted shoulders and collapsed sides — poor results.
 
 Tools available:
-- \`edit_garment_image\` — given a text instruction (e.g. "change patch pockets to welt pockets", "add a chest pocket", "make the collar a notch lapel"), produces an edited mockup of the garment photo using Qwen-Image-Edit-2509. Use this when the user wants to modify the design rather than reconstruct the photo as-is. Operates on the most recently attached or edited image by default.
+- \`edit_garment_image\` — given a text instruction (e.g. "change patch pockets to welt pockets", "add a chest pocket", "make the collar a notch lapel"), produces an edited mockup of the garment photo using FLUX.2. Use this when the user wants to modify the design rather than reconstruct the photo as-is. Operates on the most recently attached or edited image by default.
 - \`generate_3d_model\` — generates a 3D mesh (.glb) from an image. By default uses the most recently attached image. After an \`edit_garment_image\` call, pass the returned \`imageUrl\` so the mesh is built from the edited mockup, not the original photo.
 
 Behavior:
@@ -136,7 +136,7 @@ export async function POST(req: Request) {
       }),
       edit_garment_image: tool({
         description:
-          "Edit the garment photo with a natural-language instruction (e.g. 'change patch pockets to welt pockets', 'add a chest pocket', 'make the collar a notch lapel'). Uses Qwen-Image-Edit-2509. Returns a new image URL that the UI shows inline. Always show the result to the user and get approval before chaining into generate_3d_model.",
+          "Edit the garment photo with a natural-language instruction (e.g. 'change patch pockets to welt pockets', 'add a chest pocket', 'make the collar a notch lapel'). Uses FLUX.2. Returns a new image URL that the UI shows inline. Always show the result to the user and get approval before chaining into generate_3d_model.",
         inputSchema: z.object({
           instruction: z
             .string()

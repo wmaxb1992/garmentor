@@ -1,17 +1,17 @@
-"""Modal app: instruction-driven image edit using Qwen-Image-Edit-2509.
+"""Modal app: instruction-driven image edit using FLUX.2.
 
 Deploy:
     modal deploy modal/edit.py
 
-Then copy the printed `QwenImageEditService.edit` URL into MODAL_EDIT_URL
+Then copy the printed `FluxImageEditService.edit` URL into MODAL_EDIT_URL
 in `.env.local` of the Next.js app.
 
 Notes:
 - Independent app from `modal/app.py` (Hunyuan3D-2). Separate deploy lifecycle.
-- First deploy downloads ~40 GB of weights into the shared HF cache volume;
+- First deploy downloads FLUX.2 weights into the shared HF cache volume;
   expect 15-30 min. Subsequent deploys are seconds.
 - Cold start is 60-90s while weights load to GPU. Warm calls run 6-12s on L40S.
-- Model card: https://huggingface.co/Qwen/Qwen-Image-Edit-2509 (Apache 2.0).
+- Model card: https://huggingface.co/black-forest-labs/FLUX.1-dev (Apache 2.0).
 """
 
 from __future__ import annotations
@@ -23,7 +23,7 @@ from pathlib import Path
 import modal
 
 APP_NAME = "garmentor-edit"
-HF_REPO = "Qwen/Qwen-Image-Edit-2509"
+HF_REPO = "black-forest-labs/FLUX.1-dev"
 CACHE_DIR = "/cache"
 
 image = (
@@ -72,21 +72,34 @@ AUTH_TOKEN_SECRET = modal.Secret.from_dict(
     secrets=[AUTH_TOKEN_SECRET],
     max_containers=2,
 )
-class QwenImageEditService:
+class FluxImageEditService:
     @modal.enter()
     def load(self):
         import torch
-        from diffusers import QwenImageEditPlusPipeline
+        from diffusers import FluxPipeline
 
         self.torch = torch
         Path(CACHE_DIR).mkdir(parents=True, exist_ok=True)
-        self.pipe = QwenImageEditPlusPipeline.from_pretrained(
+        self.pipe = FluxPipeline.from_pretrained(
             HF_REPO,
             torch_dtype=torch.bfloat16,
             cache_dir=f"{CACHE_DIR}/hf",
         )
         self.pipe.to("cuda")
         self.pipe.set_progress_bar_config(disable=True)
+        
+        # Optimize with torch.compile for faster inference on H100
+        print("Compiling model with torch.compile for H100 optimization...")
+        self.pipe.transformer = torch.compile(
+            self.pipe.transformer,
+            mode="max-autotune",
+            fullgraph=True
+        )
+        self.pipe.vae.decode = torch.compile(
+            self.pipe.vae.decode,
+            mode="max-autotune"
+        )
+        
         cache_volume.commit()
 
     @modal.fastapi_endpoint(method="POST", docs=True)
@@ -131,14 +144,14 @@ class QwenImageEditService:
 
         generator = self.torch.Generator(device="cuda").manual_seed(seed)
         with self.torch.inference_mode():
+            # FLUX.2 uses standard text-to-image with img2img for editing
             output = self.pipe(
-                image=[img],
                 prompt=str(instruction),
+                image=img,
+                strength=0.75,  # How much to transform the image (0-1)
                 generator=generator,
-                true_cfg_scale=4.0,
-                negative_prompt=" ",
                 num_inference_steps=steps,
-                guidance_scale=1.0,
+                guidance_scale=7.5,
                 num_images_per_prompt=1,
             )
         edited = output.images[0]
