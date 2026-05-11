@@ -4,7 +4,9 @@
 #   cd runpod/triposr
 #   docker build -t YOUR_DOCKERHUB/garmentor-3d:latest .
 
-FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
+# torchmcubes (used by TripoSR) is a CUDA-C++ extension and needs nvcc +
+# Python.h at build time, so we use the -devel base image, not -runtime.
+FROM nvidia/cuda:12.1.1-cudnn8-devel-ubuntu22.04
 
 ENV DEBIAN_FRONTEND=noninteractive \
     PYTHONUNBUFFERED=1 \
