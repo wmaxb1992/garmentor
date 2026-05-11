@@ -26,9 +26,14 @@ RUN pip install --no-cache-dir \
 # references a local sibling package (./texture_baker/), so we must run pip
 # from inside the repo for relative paths to resolve. Use the modern resolver
 # (legacy resolver rejects ./path requirements).
+# Pre-install build-time deps so PEP 517 isolation can find them. AlphaCLIP
+# (sub-dep) imports pkg_resources at its setup phase, and pip's isolated
+# build venv doesn't include setuptools by default.
+RUN pip install --no-cache-dir setuptools wheel packaging cython numpy
+
 RUN git clone --depth 1 https://github.com/Stability-AI/stable-point-aware-3d.git /workspace/SPAR3D \
     && cd /workspace/SPAR3D \
-    && pip install --no-cache-dir -r requirements.txt
+    && pip install --no-cache-dir --no-build-isolation -r requirements.txt
 ENV PYTHONPATH=/workspace/SPAR3D
 
 RUN pip install --no-cache-dir \
