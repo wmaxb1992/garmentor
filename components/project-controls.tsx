@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useWorkspace } from "@/lib/workspace-store";
 
 export function ProjectControls() {
   const {
+    state,
     currentProject,
     availableProjects,
     newProject,
@@ -12,6 +13,9 @@ export function ProjectControls() {
     loadProject,
     deleteProject,
     renameProject,
+    addModel,
+    attachPattern,
+    setActive,
   } = useWorkspace();
 
   const [showSaveDialog, setShowSaveDialog] = useState(false);
@@ -75,6 +79,65 @@ export function ProjectControls() {
     setProjectName("");
   };
 
+  const handleExport = () => {
+    const payload = {
+      version: 1,
+      exportedAt: new Date().toISOString(),
+      project: currentProject?.name ?? "untitled",
+      models: state.models,
+      activeModelId: state.activeModelId,
+    };
+    const blob = new Blob([JSON.stringify(payload, null, 2)], {
+      type: "application/json",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `${(currentProject?.name ?? "garmentor").replace(/\s+/g, "_")}.garmentor.json`;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  };
+
+  const importRef = useRef<HTMLInputElement>(null);
+  const handleImportFile = async (file: File) => {
+    try {
+      const text = await file.text();
+      const payload = JSON.parse(text) as {
+        models: Record<string, unknown>;
+        activeModelId: string | null;
+      };
+      const models = Object.values(payload.models ?? {}) as Array<{
+        id: string;
+        glbUrl?: string;
+        gcdUrl?: string;
+        gcd?: unknown;
+        bytes: number;
+        description?: string;
+        sourceImageUrl?: string;
+        drapedGlbUrl?: string;
+        drapeMetrics?: { maxStretch: number; maxCompression: number; meanStretch: number };
+      }>;
+      for (const m of models) {
+        addModel({
+          id: m.id,
+          glbUrl: m.glbUrl,
+          gcdUrl: m.gcdUrl,
+          bytes: m.bytes,
+          description: m.description,
+          sourceImageUrl: m.sourceImageUrl,
+          drapedGlbUrl: m.drapedGlbUrl,
+          drapeMetrics: m.drapeMetrics,
+        });
+        if (m.gcd && m.gcdUrl) {
+          attachPattern(m.id, m.gcdUrl, m.gcd as never);
+        }
+      }
+      if (payload.activeModelId) setActive(payload.activeModelId);
+    } catch (e) {
+      alert(`Import failed: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  };
+
   return (
     <>
       <div className="flex items-center gap-2">
@@ -112,6 +175,34 @@ export function ProjectControls() {
         >
           Load
         </button>
+        <button
+          type="button"
+          onClick={handleExport}
+          disabled={Object.keys(state.models).length === 0}
+          className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-800 hover:bg-zinc-50 disabled:opacity-40 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
+          title="Export current workspace as JSON"
+        >
+          Export
+        </button>
+        <button
+          type="button"
+          onClick={() => importRef.current?.click()}
+          className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-xs font-medium text-zinc-800 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100 dark:hover:bg-zinc-800"
+          title="Import a previously exported workspace JSON"
+        >
+          Import
+        </button>
+        <input
+          ref={importRef}
+          type="file"
+          accept="application/json,.json,.garmentor.json"
+          className="hidden"
+          onChange={(e) => {
+            const f = e.target.files?.[0];
+            if (f) handleImportFile(f);
+            if (importRef.current) importRef.current.value = "";
+          }}
+        />
         {currentProject && (
           <button
             type="button"

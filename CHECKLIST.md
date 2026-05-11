@@ -282,7 +282,7 @@ Smaller-scope improvements that get layered on top of Phases 1-7. Not gated; mer
 - [ ] **Critic-cycle live progress** — server-side `streamObject` so the chat UI tickers each cycle as it happens instead of dumping all 3 at the end.
 - [ ] **Real grade rules per garment category** (jacket / shirt / pants) replacing the bbox heuristic in `modifier.ts`. Largest accuracy lever still open.
 - [ ] **Warm-worker option** behind a UI toggle: prompt the user "keep chat worker warm? +$0.77/hr" before sending the first message; default off.
-- [ ] **Project export/import** to a `.garmentor.json` file for sharing.
+- [x] **Project export/import** to a `.garmentor.json` file. Round-trips all `state.models` (including embedded GCDs, drapedGlbUrl, drapeMetrics) and the active id. Buttons in `ProjectControls`.
 
 ## 7. Open infra todos
 
