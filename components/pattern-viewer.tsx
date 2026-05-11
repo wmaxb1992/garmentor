@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react";
 import { gcdToDxf, panelToPolyline, type DxfUnit } from "@/lib/gcd-to-dxf";
 import type { GcdPattern } from "@/lib/garment-gpt";
-import { useActiveModel } from "@/lib/workspace-store";
+import { useActiveModel, useWorkspace } from "@/lib/workspace-store";
 
 const PALETTE = [
   "#0ea5e9",
@@ -22,8 +22,38 @@ function fmtCm(v: number): string {
 
 export function PatternViewer() {
   const active = useActiveModel();
+  const { attachPattern } = useWorkspace();
   const [unit, setUnit] = useState<DxfUnit>("mm");
+  const [selected, setSelected] = useState<string | null>(null);
   const pattern = active?.gcd as GcdPattern | undefined;
+
+  const resizePanel = (name: string, newW: number, newH: number) => {
+    if (!pattern || !active) return;
+    const panel = pattern.pattern.panels[name];
+    if (!panel) return;
+    const poly = panelToPolyline(panel);
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    for (const [x, y] of poly) {
+      if (x < minX) minX = x;
+      if (x > maxX) maxX = x;
+      if (y < minY) minY = y;
+      if (y > maxY) maxY = y;
+    }
+    const curW = maxX - minX;
+    const curH = maxY - minY;
+    if (curW <= 0 || curH <= 0) return;
+    const sx = newW / curW;
+    const sy = newH / curH;
+    const cx = (minX + maxX) / 2;
+    const cy = (minY + maxY) / 2;
+    const next: GcdPattern = JSON.parse(JSON.stringify(pattern));
+    const p = next.pattern.panels[name];
+    p.vertices = p.vertices.map(([x, y]) => [
+      cx + (x - cx) * sx,
+      cy + (y - cy) * sy,
+    ]);
+    attachPattern(active.id, active.gcdUrl ?? "", next);
+  };
 
   const panels = useMemo(() => {
     if (!pattern) return [];
@@ -150,53 +180,149 @@ export function PatternViewer() {
           </button>
         </div>
       </div>
-      <div className="flex-1 overflow-auto bg-zinc-50 p-4 dark:bg-zinc-900">
-        <svg
-          viewBox={`-2 -2 ${layout.totalW + 4} ${layout.totalH + 4}`}
-          xmlns="http://www.w3.org/2000/svg"
-          className="h-full w-full"
-          style={{ maxHeight: "100%" }}
-        >
-          {layout.placed.map((p) => {
-            const d =
-              "M " +
-              p.poly
-                .map(([x, y]) => `${(x + p.tx).toFixed(2)} ${(y + p.ty).toFixed(2)}`)
-                .join(" L ") +
-              " Z";
-            return (
-              <g key={p.name}>
-                <path
-                  d={d}
-                  fill={p.color + "22"}
-                  stroke={p.color}
-                  strokeWidth={0.2}
-                />
-                <text
-                  x={p.tx + p.minX + p.width / 2}
-                  y={p.ty + p.minY + p.height / 2}
-                  textAnchor="middle"
-                  fontSize={1.6}
-                  fill="#111"
-                  className="pointer-events-none select-none"
-                >
-                  {p.name}
-                </text>
-                <text
-                  x={p.tx + p.minX + p.width / 2}
-                  y={p.ty + p.minY + p.height / 2 + 2}
-                  textAnchor="middle"
-                  fontSize={1.1}
-                  fill="#555"
-                  className="pointer-events-none select-none"
-                >
-                  {fmtCm(p.width)} × {fmtCm(p.height)}
-                </text>
-              </g>
-            );
-          })}
-        </svg>
+      <div className="flex min-h-0 flex-1">
+        <div className="flex-1 overflow-auto bg-zinc-50 p-4 dark:bg-zinc-900">
+          <svg
+            viewBox={`-2 -2 ${layout.totalW + 4} ${layout.totalH + 4}`}
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-full w-full"
+            style={{ maxHeight: "100%" }}
+          >
+            {layout.placed.map((p) => {
+              const d =
+                "M " +
+                p.poly
+                  .map(([x, y]) => `${(x + p.tx).toFixed(2)} ${(y + p.ty).toFixed(2)}`)
+                  .join(" L ") +
+                " Z";
+              const isSelected = selected === p.name;
+              return (
+                <g key={p.name} onClick={() => setSelected(p.name)} style={{ cursor: "pointer" }}>
+                  <path
+                    d={d}
+                    fill={p.color + (isSelected ? "55" : "22")}
+                    stroke={p.color}
+                    strokeWidth={isSelected ? 0.5 : 0.2}
+                  />
+                  <text
+                    x={p.tx + p.minX + p.width / 2}
+                    y={p.ty + p.minY + p.height / 2}
+                    textAnchor="middle"
+                    fontSize={1.6}
+                    fill="#111"
+                    className="pointer-events-none select-none"
+                  >
+                    {p.name}
+                  </text>
+                  <text
+                    x={p.tx + p.minX + p.width / 2}
+                    y={p.ty + p.minY + p.height / 2 + 2}
+                    textAnchor="middle"
+                    fontSize={1.1}
+                    fill="#555"
+                    className="pointer-events-none select-none"
+                  >
+                    {fmtCm(p.width)} × {fmtCm(p.height)}
+                  </text>
+                </g>
+              );
+            })}
+          </svg>
+        </div>
+        <aside className="w-64 shrink-0 overflow-auto border-l border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+          <div className="mb-2 text-[10px] font-semibold uppercase tracking-wide text-zinc-500 dark:text-zinc-400">
+            Panel specs (cm)
+          </div>
+          <ul className="space-y-2 text-xs">
+            {layout.placed.map((p) => (
+              <PanelRow
+                key={p.name}
+                name={p.name}
+                color={p.color}
+                width={p.width}
+                height={p.height}
+                selected={selected === p.name}
+                onSelect={() => setSelected(p.name)}
+                onResize={(w, h) => resizePanel(p.name, w, h)}
+              />
+            ))}
+          </ul>
+          <p className="mt-3 text-[10px] leading-snug text-zinc-400">
+            Edit dimensions to uniformly rescale a panel about its centroid.
+            Re-export DXF after changes.
+          </p>
+        </aside>
       </div>
     </div>
+  );
+}
+
+function PanelRow({
+  name,
+  color,
+  width,
+  height,
+  selected,
+  onSelect,
+  onResize,
+}: {
+  name: string;
+  color: string;
+  width: number;
+  height: number;
+  selected: boolean;
+  onSelect: () => void;
+  onResize: (w: number, h: number) => void;
+}) {
+  const [w, setW] = useState(width.toFixed(1));
+  const [h, setH] = useState(height.toFixed(1));
+  // Reset inputs when the underlying panel changes from outside (e.g. another panel edit re-laid out).
+  useMemo(() => {
+    setW(width.toFixed(1));
+    setH(height.toFixed(1));
+  }, [width, height]);
+  const apply = () => {
+    const nw = parseFloat(w);
+    const nh = parseFloat(h);
+    if (!Number.isFinite(nw) || !Number.isFinite(nh) || nw <= 0 || nh <= 0) return;
+    if (Math.abs(nw - width) < 0.05 && Math.abs(nh - height) < 0.05) return;
+    onResize(nw, nh);
+  };
+  return (
+    <li
+      onClick={onSelect}
+      className={`rounded border px-2 py-1.5 ${
+        selected
+          ? "border-zinc-400 bg-zinc-50 dark:border-zinc-500 dark:bg-zinc-800"
+          : "border-zinc-200 hover:bg-zinc-50 dark:border-zinc-800 dark:hover:bg-zinc-900"
+      }`}
+    >
+      <div className="mb-1 flex items-center gap-1.5">
+        <span className="inline-block h-2 w-2 rounded-sm" style={{ background: color }} />
+        <span className="truncate text-zinc-700 dark:text-zinc-200">{name}</span>
+      </div>
+      <div className="flex items-center gap-1.5">
+        <input
+          type="number"
+          step="0.5"
+          value={w}
+          onChange={(e) => setW(e.target.value)}
+          onBlur={apply}
+          onKeyDown={(e) => e.key === "Enter" && apply()}
+          className="w-16 rounded border border-zinc-300 bg-white px-1.5 py-0.5 text-right text-xs dark:border-zinc-700 dark:bg-zinc-900"
+        />
+        <span className="text-zinc-400">×</span>
+        <input
+          type="number"
+          step="0.5"
+          value={h}
+          onChange={(e) => setH(e.target.value)}
+          onBlur={apply}
+          onKeyDown={(e) => e.key === "Enter" && apply()}
+          className="w-16 rounded border border-zinc-300 bg-white px-1.5 py-0.5 text-right text-xs dark:border-zinc-700 dark:bg-zinc-900"
+        />
+        <span className="text-[10px] text-zinc-500">cm</span>
+      </div>
+    </li>
   );
 }

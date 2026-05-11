@@ -1,24 +1,24 @@
 #!/usr/bin/env bun
 /**
- * Creates the three RunPod Serverless endpoints needed by Garmentor:
- *   - garmentor-pattern  (GarmentGPT)
- *   - garmentor-flux-edit (FLUX.1-schnell)
- *   - garmentor-generate-3d (TripoSR)  — only if --include-3d is passed
+ * Creates the RunPod Serverless endpoints needed by Garmentor.
  *
- * The chat VLM endpoint is created via RunPod's UI Quick Deploy
- * (see runpod/chat-vlm/README.md) so we don't touch it here.
+ * Two-step flow per RunPod's REST API:
+ *   1. POST /v1/templates  → templateId (container image + env + disk)
+ *   2. POST /v1/endpoints  → endpointId (gpu, workers, idle timeout, ...)
  *
  * Usage:
- *   export RUNPOD_API_KEY=...                  # required
- *   export GITHUB_OWNER=wmaxb1992               # default: parsed from `gh`
- *   bun scripts/runpod-create-endpoints.ts      # creates pattern + flux-edit
+ *   export RUNPOD_API_KEY=...
+ *   bun scripts/runpod-create-endpoints.ts
  *
- * Idempotent: re-running re-finds existing endpoints by name and prints their
- * URLs instead of duplicating.
+ * Idempotent: re-finds existing templates/endpoints by name.
  */
 
 import { writeFile, readFile } from "node:fs/promises";
 import { existsSync } from "node:fs";
+import { exec } from "node:child_process";
+import { promisify } from "node:util";
+
+const execP = promisify(exec);
 
 const API = "https://rest.runpod.io/v1";
 const API_KEY = process.env.RUNPOD_API_KEY;
@@ -28,15 +28,15 @@ const OWNER =
   "wmaxb1992";
 
 if (!API_KEY) {
-  console.error("RUNPOD_API_KEY is required. Get one at https://www.runpod.io/console/user/settings");
+  console.error("RUNPOD_API_KEY is required.");
   process.exit(1);
 }
 
-type Endpoint = {
+type Spec = {
   name: string;
-  imageName: string; // GHCR ref
-  gpuTypeIds: string[];
+  imageName: string;
   containerDiskInGb: number;
+  gpuTypeIds: string[];
   workersMin: number;
   workersMax: number;
   idleTimeout: number;
@@ -44,13 +44,28 @@ type Endpoint = {
   env?: Record<string, string>;
 };
 
-const endpoints: Endpoint[] = [
+const specs: Spec[] = [
+  {
+    name: "garmentor-chat-vlm",
+    imageName: "runpod/worker-v1-vllm:v2.5.0stable-cuda12.1.0",
+    containerDiskInGb: 60,
+    gpuTypeIds: ["NVIDIA L40S", "NVIDIA A100 80GB PCIe", "NVIDIA H100 PCIe"],
+    workersMin: 0,
+    workersMax: 1,
+    idleTimeout: 10,
+    flashboot: true,
+    env: {
+      MODEL_NAME: "Qwen/Qwen2.5-VL-7B-Instruct",
+      ENABLE_AUTO_TOOL_CHOICE: "true",
+      TOOL_CALL_PARSER: "hermes",
+      MAX_MODEL_LEN: "16384",
+    },
+  },
   {
     name: "garmentor-pattern",
     imageName: `ghcr.io/${OWNER}/garmentor-pattern:latest`,
-    // RTX 4090 (24GB) — Garment-GPT VLM + VQVAE fits comfortably
+    containerDiskInGb: 80,
     gpuTypeIds: ["NVIDIA GeForce RTX 4090", "NVIDIA L40S", "NVIDIA A100 80GB PCIe"],
-    containerDiskInGb: 50,
     workersMin: 0,
     workersMax: 3,
     idleTimeout: 10,
@@ -59,16 +74,30 @@ const endpoints: Endpoint[] = [
   {
     name: "garmentor-flux-edit",
     imageName: `ghcr.io/${OWNER}/garmentor-flux-edit:latest`,
+    containerDiskInGb: 80,
     gpuTypeIds: ["NVIDIA GeForce RTX 4090", "NVIDIA L40S"],
-    containerDiskInGb: 50,
     workersMin: 0,
-    workersMax: 3,
+    workersMax: 2,
+    idleTimeout: 10,
+    flashboot: true,
+  },
+  {
+    name: "garmentor-3d",
+    imageName: `ghcr.io/${OWNER}/garmentor-3d:latest`,
+    containerDiskInGb: 30,
+    gpuTypeIds: ["NVIDIA GeForce RTX 4090", "NVIDIA L40S", "NVIDIA RTX A4000"],
+    workersMin: 0,
+    workersMax: 2,
     idleTimeout: 10,
     flashboot: true,
   },
 ];
 
-async function api<T = unknown>(method: string, path: string, body?: unknown): Promise<T> {
+async function api<T = unknown>(
+  method: string,
+  path: string,
+  body?: unknown,
+): Promise<T> {
   const res = await fetch(`${API}${path}`, {
     method,
     headers: {
@@ -79,55 +108,67 @@ async function api<T = unknown>(method: string, path: string, body?: unknown): P
   });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(`RunPod ${method} ${path} -> ${res.status}: ${text.slice(0, 500)}`);
+    throw new Error(`RunPod ${method} ${path} -> ${res.status}: ${text.slice(0, 600)}`);
   }
+  if (res.status === 204) return undefined as T;
   return (await res.json()) as T;
 }
 
 async function $(cmd: string): Promise<string> {
-  const proc = Bun.spawn(["sh", "-c", cmd], { stdout: "pipe", stderr: "pipe" });
-  const out = await new Response(proc.stdout).text();
-  await proc.exited;
-  return out.trim();
+  const { stdout } = await execP(cmd);
+  return stdout.trim();
 }
 
-type RunPodEndpoint = {
-  id: string;
-  name: string;
-  imageName?: string;
-};
+type RP = { id: string; name: string };
 
-async function listEndpoints(): Promise<RunPodEndpoint[]> {
-  const out = await api<RunPodEndpoint[]>("GET", "/endpoints");
-  return Array.isArray(out) ? out : [];
+async function findTemplate(name: string): Promise<RP | null> {
+  const list = await api<RP[]>("GET", "/templates");
+  return Array.isArray(list) ? list.find((t) => t.name === name) ?? null : null;
 }
 
-async function createEndpoint(ep: Endpoint): Promise<RunPodEndpoint> {
-  const payload = {
-    name: ep.name,
-    imageName: ep.imageName,
-    gpuTypeIds: ep.gpuTypeIds,
-    containerDiskInGb: ep.containerDiskInGb,
-    workersMin: ep.workersMin,
-    workersMax: ep.workersMax,
-    idleTimeout: ep.idleTimeout,
-    flashboot: ep.flashboot,
-    env: ep.env ?? {},
-    executionTimeoutMs: 10 * 60 * 1000,
-  };
-  return await api<RunPodEndpoint>("POST", "/endpoints", payload);
+async function findEndpoint(name: string): Promise<RP | null> {
+  const list = await api<RP[]>("GET", "/endpoints");
+  return Array.isArray(list) ? list.find((e) => e.name === name) ?? null : null;
 }
 
-async function ensureEndpoint(ep: Endpoint): Promise<string> {
-  const existing = (await listEndpoints()).find((e) => e.name === ep.name);
+async function createTemplate(spec: Spec): Promise<string> {
+  const existing = await findTemplate(spec.name);
   if (existing) {
-    console.log(`✓ ${ep.name} already exists (id=${existing.id})`);
+    console.log(`  ↪ template ${spec.name} exists (${existing.id})`);
     return existing.id;
   }
-  console.log(`+ creating ${ep.name} from ${ep.imageName}`);
-  const created = await createEndpoint(ep);
-  console.log(`✓ created ${ep.name} (id=${created.id})`);
-  return created.id;
+  const body = {
+    name: spec.name,
+    imageName: spec.imageName,
+    containerDiskInGb: spec.containerDiskInGb,
+    env: spec.env ?? {},
+    isServerless: true,
+    readme: `Auto-created by scripts/runpod-create-endpoints.ts`,
+  };
+  const out = await api<RP>("POST", "/templates", body);
+  console.log(`  ✓ created template ${spec.name} (${out.id})`);
+  return out.id;
+}
+
+async function createEndpoint(spec: Spec, templateId: string): Promise<string> {
+  const existing = await findEndpoint(spec.name);
+  if (existing) {
+    console.log(`  ↪ endpoint ${spec.name} exists (${existing.id})`);
+    return existing.id;
+  }
+  const body = {
+    name: spec.name,
+    templateId,
+    gpuTypeIds: spec.gpuTypeIds,
+    workersMin: spec.workersMin,
+    workersMax: spec.workersMax,
+    idleTimeout: spec.idleTimeout,
+    flashboot: spec.flashboot,
+    executionTimeoutMs: 10 * 60 * 1000,
+  };
+  const out = await api<RP>("POST", "/endpoints", body);
+  console.log(`  ✓ created endpoint ${spec.name} (${out.id})`);
+  return out.id;
 }
 
 async function upsertEnvLocal(updates: Record<string, string>): Promise<void> {
@@ -153,35 +194,32 @@ async function upsertEnvLocal(updates: Record<string, string>): Promise<void> {
 }
 
 async function main(): Promise<void> {
-  console.log(`RunPod owner: ${OWNER}`);
-
+  console.log(`Owner: ${OWNER}`);
   const ids: Record<string, string> = {};
-  for (const ep of endpoints) {
-    ids[ep.name] = await ensureEndpoint(ep);
+  for (const spec of specs) {
+    console.log(`\n[${spec.name}]`);
+    const tplId = await createTemplate(spec);
+    const epId = await createEndpoint(spec, tplId);
+    ids[spec.name] = epId;
   }
-
   const updates: Record<string, string> = {
     RUNPOD_API_KEY: API_KEY!,
+    RUNPOD_CHAT_BASE_URL: `https://api.runpod.ai/v2/${ids["garmentor-chat-vlm"]}/openai/v1`,
     RUNPOD_PATTERN_ENDPOINT_URL: `https://api.runpod.ai/v2/${ids["garmentor-pattern"]}/runsync`,
     RUNPOD_EDIT_ENDPOINT_URL: `https://api.runpod.ai/v2/${ids["garmentor-flux-edit"]}/runsync`,
+    RUNPOD_GENERATE_ENDPOINT_URL: `https://api.runpod.ai/v2/${ids["garmentor-3d"]}/runsync`,
   };
   await upsertEnvLocal(updates);
-
-  console.log("\n.env.local updated with:");
+  console.log("\n.env.local updated:");
   for (const [k, v] of Object.entries(updates)) {
     console.log(`  ${k}=${k === "RUNPOD_API_KEY" ? "<set>" : v}`);
   }
-
-  console.log("\nNext steps:");
-  console.log(" 1. Deploy chat-vlm in the RunPod UI (Serverless vLLM Quick Deploy)");
-  console.log("    Model: Qwen/Qwen2.5-VL-7B-Instruct");
-  console.log("    Copy the OpenAI URL → set RUNPOD_CHAT_BASE_URL in .env.local");
-  console.log(" 2. Deploy 3D (TripoSR/TRELLIS) per runpod/RUNPOD_SETUP.md");
-  console.log("    Set RUNPOD_GENERATE_ENDPOINT_URL in .env.local");
-  console.log(" 3. bun run dev");
+  console.log("\nStill todo:");
+  console.log(" - RUNPOD_CHAT_BASE_URL  (chat-vlm Quick Deploy — set already if you did step 3)");
+  console.log(" - RUNPOD_GENERATE_ENDPOINT_URL  (3D mesh per runpod/RUNPOD_SETUP.md)");
 }
 
 main().catch((e) => {
-  console.error(e);
+  console.error(String(e));
   process.exit(1);
 });

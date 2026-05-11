@@ -6,6 +6,7 @@ on:
     paths:
       - "runpod/garment-gpt/**"
       - "runpod/flux-edit/**"
+      - "runpod/triposr/**"
       - ".github/workflows/build-runpod.yml"
   workflow_dispatch:
 
@@ -26,6 +27,9 @@ jobs:
           - name: flux-edit
             context: runpod/flux-edit
             image: garmentor-flux-edit
+          - name: triposr
+            context: runpod/triposr
+            image: garmentor-3d
     steps:
       - uses: actions/checkout@v4
 

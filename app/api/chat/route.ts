@@ -14,14 +14,18 @@ import { generatePatternFromBytes } from "@/lib/garment-gpt";
 export const maxDuration = 600;
 export const runtime = "nodejs";
 
-const MODEL_ID = process.env.CHAT_MODEL ?? "Qwen/Qwen2.5-VL-7B-Instruct";
+const MODEL_ID = process.env.CHAT_MODEL ?? "qwen/qwen2.5-vl-7b-instruct";
 
 const SYSTEM_PROMPT = `You are Garmentor, an assistant that turns garment photos into measurement-accurate 3D models, iterates on the design via image edits, and produces flat sewing patterns (DXF) via a dedicated pattern generator.
 
 Tools available:
-- \`generate_pattern\` — given a garment photo, runs GarmentGPT to produce 2D sewing panels directly (with named panels, 2D vertices, cubic Bezier curves, and 3D positioning). This is the primary deliverable for tech-pack work. Use this when the user wants the actual pattern, panel layout, or cuttable DXF.
-- \`generate_3d_model\` — generates a 3D mesh (.glb) from a garment image for preview/visualization. Use when the user wants a 3D preview, not a sewing pattern.
-- \`edit_garment_image\` — applies a natural-language edit to a garment photo (e.g. "change patch pockets to welt pockets") and returns a new image. Use to iterate on design before generating a pattern or 3D model.
+- \`generate_pattern\` — given a garment photo, runs GarmentGPT to produce 2D sewing panels directly. Primary deliverable for tech-pack / cuttable work.
+- \`generate_3d_model\` — generates a 3D mesh (.glb) from a garment image for visualization on the workspace 3D viewer.
+- \`edit_garment_image\` — natural-language edit on a photo (e.g. "change patch pockets to welt pockets") returning a new image.
+
+Tool-firing policy:
+- When the user wants both the pattern and a preview (the typical case after attaching a photo), call \`generate_pattern\` AND \`generate_3d_model\` IN PARALLEL in the same step. They share the source image and both results bind to the same workspace item.
+- Calibration: ask the user for ONE reference measurement (e.g. "back length 72 cm" or "chest girth 110 cm"). If they give it, pass \`referenceMeasurement: { kind, valueCm }\` to \`generate_pattern\` so the panels are absolute-scaled. If they decline, proceed without it.
 
 Image quality ranking for accurate reconstruction (best → worst):
 1. Ghost-mannequin shot (invisible form, straight-on or 3/4 angle) — best.
@@ -99,29 +103,58 @@ export async function POST(req: Request) {
   const latestImage = extractLatestImage(messages);
   const provider = getChatProvider();
 
+  console.log("[chat] model:", MODEL_ID, "baseURL:", process.env.RUNPOD_CHAT_BASE_URL);
+  // DEBUG: tools disabled to isolate streaming issue
+  if (process.env.CHAT_DEBUG_NO_TOOLS === "1") {
+    const r = streamText({
+      model: provider.chatModel(MODEL_ID),
+      system: "You are a helpful assistant.",
+      messages: await convertToModelMessages(messages),
+      onFinish: ({ text, finishReason, usage }) => {
+        console.log("[chat-debug] onFinish:", { textLen: text?.length, finishReason, usage });
+      },
+      onError: ({ error }) => {
+        console.error("[chat-debug] onError:", error);
+      },
+    });
+    return r.toUIMessageStreamResponse();
+  }
   const result = streamText({
     model: provider.chatModel(MODEL_ID),
     system: SYSTEM_PROMPT,
     messages: await convertToModelMessages(messages),
     stopWhen: stepCountIs(4),
+    onFinish: ({ text, toolCalls, finishReason, usage }) => {
+      console.log("[chat] onFinish:", { textLen: text?.length, toolCallCount: toolCalls?.length, finishReason, usage });
+    },
+    onError: ({ error }) => {
+      console.error("[chat] streamText onError:", error);
+    },
     tools: {
       generate_pattern: tool({
         description:
-          "Generate 2D sewing pattern panels directly from a garment image using GarmentGPT. Returns named panels (front_panel, back_panel, sleeve, etc.) with 2D vertices, cubic Bezier curves, and 3D positioning. The UI renders the panels as an SVG flat layout and exposes a DXF export. Use this when the user wants the actual pattern, cuttable file, or panel layout.",
+          "Generate 2D sewing pattern panels directly from a garment image using GarmentGPT. Returns named panels with 2D vertices and cubic Bezier curves. UI renders an SVG flat layout + DXF export. Use this when the user wants the actual cuttable pattern. If the user supplies a reference dimension (e.g. 'back length 72 cm') include it as `referenceMeasurement` to calibrate absolute sizing.",
         inputSchema: z.object({
           description: z
             .string()
-            .describe(
-              "Short description of the garment (e.g. 'denim jacket, front view'). Logging only.",
-            ),
+            .describe("Short description (e.g. 'denim jacket, front view')."),
           imageUrl: z
             .string()
             .optional()
             .describe(
-              "Optional. URL of a previously edited image (returned by edit_garment_image) to use instead of the attached photo.",
+              "Optional. URL of a previously edited image (returned by edit_garment_image).",
+            ),
+          referenceMeasurement: z
+            .object({
+              kind: z.enum(["back_length", "chest_girth", "total_width"]),
+              valueCm: z.number().positive(),
+            })
+            .optional()
+            .describe(
+              "Optional. Real-world measurement to calibrate panel scale. back_length = top-of-collar to hem; chest_girth = full circumference; total_width = widest cross-section.",
             ),
         }),
-        execute: async ({ description, imageUrl }) => {
+        execute: async ({ description, imageUrl, referenceMeasurement }) => {
           const source = await resolveImage(imageUrl, latestImage);
           if (!source) {
             return {
@@ -135,6 +168,7 @@ export async function POST(req: Request) {
             const out = await generatePatternFromBytes(
               source.bytes,
               source.mediaType,
+              referenceMeasurement,
             );
             return {
               ok: true as const,
@@ -143,6 +177,7 @@ export async function POST(req: Request) {
               sourceImageUrl: out.sourceImageUrl,
               bytes: out.bytes,
               panelCount: Object.keys(out.pattern.pattern.panels).length,
+              scaleApplied: out.scaleApplied,
               description,
             };
           } catch (err) {
@@ -249,8 +284,9 @@ export async function POST(req: Request) {
 
   return result.toUIMessageStreamResponse({
     onError: (err) => {
-      if (err instanceof Error) return err.message;
-      return typeof err === "string" ? err : "Unknown error";
+      console.error("[chat] stream error:", err);
+      if (err instanceof Error) return `${err.name}: ${err.message}`;
+      return typeof err === "string" ? err : JSON.stringify(err);
     },
   });
 }
