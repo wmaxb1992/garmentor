@@ -2,13 +2,14 @@
 
 import { useState } from "react";
 import { FlatSketch } from "@/components/flat-sketch";
+import { FitViewer } from "@/components/fit-viewer";
 import { PatternViewer } from "@/components/pattern-viewer";
 import { SeamEditor } from "@/components/seam-editor";
 import { ProjectControls } from "@/components/project-controls";
 import { cn } from "@/lib/utils";
 import { useActiveModel, useWorkspace } from "@/lib/workspace-store";
 
-type WorkspaceTab = "pattern" | "seams" | "sketch";
+type WorkspaceTab = "pattern" | "fit" | "seams" | "sketch";
 
 export function Workspace() {
   const { state, setActive } = useWorkspace();
@@ -46,6 +47,13 @@ export function Workspace() {
           <div className="flex items-center gap-1 rounded-md bg-zinc-100 p-0.5 dark:bg-zinc-900">
             <TabPill active={tab === "pattern"} onClick={() => setTab("pattern")}>
               Pattern
+            </TabPill>
+            <TabPill
+              active={tab === "fit"}
+              onClick={() => setTab("fit")}
+              disabled={!active.drapedGlbUrl}
+            >
+              Fit
             </TabPill>
             <TabPill
               active={tab === "seams"}
@@ -98,6 +106,8 @@ export function Workspace() {
         <div className="flex-1 overflow-hidden">
           {tab === "pattern" ? (
             <PatternViewer key={active.id} />
+          ) : tab === "fit" ? (
+            <FitViewer key={active.id} />
           ) : tab === "seams" && active.glbUrl ? (
             <SeamEditor key={active.id} model={{ ...active, glbUrl: active.glbUrl }} />
           ) : tab === "sketch" && active.glbUrl ? (

@@ -20,6 +20,12 @@ export type Seam = {
   createdAt: number;
 };
 
+export type DrapeMetrics = {
+  maxStretch: number;
+  maxCompression: number;
+  meanStretch: number;
+};
+
 export type Model = {
   id: string;
   glbUrl?: string;
@@ -30,6 +36,8 @@ export type Model = {
   sourceImageUrl?: string;
   gcdUrl?: string;
   gcd?: GcdPattern;
+  drapedGlbUrl?: string;
+  drapeMetrics?: DrapeMetrics;
 };
 
 export type ViewerSettings = {
@@ -176,6 +184,11 @@ export type WorkspaceContextValue = {
   availableProjects: Array<{ id: string; name: string; lastModified: number }>;
   addModel: (input: Omit<Model, "createdAt" | "seams"> & { seams?: Seam[] }) => void;
   attachPattern: (modelId: string, gcdUrl: string, gcd: GcdPattern) => void;
+  attachDrape: (
+    modelId: string,
+    drapedGlbUrl: string,
+    metrics: DrapeMetrics,
+  ) => void;
   setActive: (id: string | null) => void;
   addSeam: (modelId: string, vertexIndices: number[]) => string;
   removeSeam: (modelId: string, seamId: string) => void;
@@ -277,6 +290,23 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const setViewer = useCallback<WorkspaceContextValue["setViewer"]>((next) => {
     setState((prev) => ({ ...prev, viewer: { ...prev.viewer, ...next } }));
   }, []);
+
+  const attachDrape = useCallback<WorkspaceContextValue["attachDrape"]>(
+    (modelId, drapedGlbUrl, metrics) => {
+      setState((prev) => {
+        const m = prev.models[modelId];
+        if (!m) return prev;
+        return {
+          ...prev,
+          models: {
+            ...prev.models,
+            [modelId]: { ...m, drapedGlbUrl, drapeMetrics: metrics },
+          },
+        };
+      });
+    },
+    [],
+  );
 
   const setActive = useCallback<WorkspaceContextValue["setActive"]>((id) => {
     setState((prev) => {
@@ -441,6 +471,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       availableProjects,
       addModel,
       attachPattern,
+      attachDrape,
       setActive,
       addSeam,
       removeSeam,
@@ -462,6 +493,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       availableProjects,
       addModel,
       attachPattern,
+      attachDrape,
       setActive,
       addSeam,
       removeSeam,

@@ -47,6 +47,17 @@ type GeneratePatternToolOutput =
     }
   | { ok: false; error: string };
 
+type DrapePatternToolOutput =
+  | {
+      ok: true;
+      id: string;
+      patternId: string;
+      drapedGlbUrl: string;
+      bytes: number;
+      metrics: { maxStretch: number; maxCompression: number; meanStretch: number };
+    }
+  | { ok: false; error: string };
+
 export function Chat() {
   const { messages, sendMessage, status, stop, error } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
@@ -145,6 +156,17 @@ export function Chat() {
                           state={part.state}
                           output={
                             part.output as GeneratePatternToolOutput | undefined
+                          }
+                        />
+                      );
+                    }
+                    if (part.type === "tool-drape_pattern") {
+                      return (
+                        <DrapeToolPart
+                          key={i}
+                          state={part.state}
+                          output={
+                            part.output as DrapePatternToolOutput | undefined
                           }
                         />
                       );
@@ -332,6 +354,73 @@ function EditToolPart({
           >
             Download ({Math.round(output.bytes / 1024)} KB)
           </a>
+        </div>
+      </div>
+    );
+  }
+  if (state === "output-error") {
+    return (
+      <div className="rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
+        Tool failed.
+      </div>
+    );
+  }
+  return null;
+}
+
+function DrapeToolPart({
+  state,
+  output,
+}: {
+  state: string;
+  output?: DrapePatternToolOutput;
+}) {
+  const { attachDrape, state: ws } = useWorkspace();
+
+  useEffect(() => {
+    if (state !== "output-available" || !output || !output.ok) return;
+    // Find the workspace model whose id matches the source patternId.
+    const m = ws.models[output.patternId];
+    if (!m) return;
+    attachDrape(output.patternId, output.drapedGlbUrl, output.metrics);
+  }, [state, output, attachDrape, ws.models]);
+
+  if (state === "input-streaming" || state === "input-available") {
+    return (
+      <div className="rounded-xl border border-dashed border-zinc-300 bg-white/50 px-3 py-2 text-xs text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/40">
+        Running cloth simulation… typically 30–90 s.
+      </div>
+    );
+  }
+  if (state === "output-available" && output) {
+    if (!output.ok) {
+      return (
+        <div className="rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
+          {output.error}
+        </div>
+      );
+    }
+    const m = output.metrics;
+    const verdict =
+      m.maxStretch > 1.15
+        ? { color: "#dc2626", text: "pulling" }
+        : m.maxCompression < 0.85
+        ? { color: "#2563eb", text: "excess" }
+        : { color: "#16a34a", text: "good fit" };
+    return (
+      <div className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+          Drape simulation complete
+        </div>
+        <div className="mt-1 text-xs text-zinc-500 dark:text-zinc-400">
+          max stretch {m.maxStretch.toFixed(2)} · max compression{" "}
+          {m.maxCompression.toFixed(2)} · {" "}
+          <span style={{ color: verdict.color }} className="font-medium">
+            {verdict.text}
+          </span>
+        </div>
+        <div className="mt-2 text-xs text-zinc-500 dark:text-zinc-400">
+          Open the <span className="font-medium">Fit</span> tab to inspect.
         </div>
       </div>
     );

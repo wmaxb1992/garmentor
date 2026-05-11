@@ -10,6 +10,9 @@ import { z } from "zod";
 import { dataUrlToBytes, generate3dFromBytes } from "@/lib/generate3d";
 import { editGarmentImage, readPublicGeneratedFile } from "@/lib/edit-image";
 import { generatePatternFromBytes } from "@/lib/garment-gpt";
+import { drapeWithWarp } from "@/lib/cloth-sim";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 
 export const maxDuration = 600;
 export const runtime = "nodejs";
@@ -22,6 +25,7 @@ Tools available:
 - \`generate_pattern\` — given a garment photo, runs GarmentGPT to produce 2D sewing panels directly. Primary deliverable for tech-pack / cuttable work.
 - \`generate_3d_model\` — generates a 3D mesh (.glb) from a garment image for visualization on the workspace 3D viewer.
 - \`edit_garment_image\` — natural-language edit on a photo (e.g. "change patch pockets to welt pockets") returning a new image.
+- \`drape_pattern\` — given a previously generated pattern, runs an NVIDIA Warp XPBD cloth simulation to drape the stitched panels on an avatar. Returns a draped GLB + fit metrics (stretch, compression). Call this when the user wants to validate fit, see the garment "on body", or detect pulling/excess fabric. Requires a prior \`generate_pattern\` call; pass the resulting \`patternId\`.
 
 Tool-firing policy:
 - When the user wants both the pattern and a preview (the typical case after attaching a photo), call \`generate_pattern\` AND \`generate_3d_model\` IN PARALLEL in the same step. They share the source image and both results bind to the same workspace item.
@@ -222,6 +226,49 @@ export async function POST(req: Request) {
               bytes: out.bytes,
               description,
               sourceImageUrl: out.sourceImageUrl,
+            };
+          } catch (err) {
+            return {
+              ok: false as const,
+              error: err instanceof Error ? err.message : String(err),
+            };
+          }
+        },
+      }),
+      drape_pattern: tool({
+        description:
+          "Run an NVIDIA Warp XPBD cloth simulation that stitches and drapes the GarmentGPT 2D panels into a draped 3D garment. Use after generate_pattern when the user wants fit validation or to see the garment on body. Returns metrics: maxStretch>1.15 means pulling, maxCompression<0.85 means excess fabric.",
+        inputSchema: z.object({
+          patternId: z
+            .string()
+            .describe(
+              "The `id` returned by an earlier generate_pattern call (we'll load the GCD JSON from public/generated/{id}.gcd.json).",
+            ),
+          fabric: z
+            .enum(["cotton", "denim", "silk", "leather", "wool", "linen"])
+            .optional()
+            .describe("Fabric preset that sets stretch/bend stiffness."),
+          substeps: z
+            .number()
+            .int()
+            .min(20)
+            .max(200)
+            .optional()
+            .describe("XPBD substeps (default 80). More = better convergence, slower."),
+        }),
+        execute: async ({ patternId, fabric, substeps }) => {
+          try {
+            const path = join(process.cwd(), "public", "generated", `${patternId}.gcd.json`);
+            const raw = await readFile(path, "utf8");
+            const pattern = JSON.parse(raw);
+            const out = await drapeWithWarp(pattern, { fabric, substeps });
+            return {
+              ok: true as const,
+              id: out.id,
+              patternId,
+              drapedGlbUrl: out.drapedGlbUrl,
+              bytes: out.bytes,
+              metrics: out.metrics,
             };
           } catch (err) {
             return {

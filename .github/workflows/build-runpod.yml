@@ -7,6 +7,7 @@ on:
       - "runpod/garment-gpt/**"
       - "runpod/flux-edit/**"
       - "runpod/triposr/**"
+      - "runpod/cloth-sim/**"
       - ".github/workflows/build-runpod.yml"
   workflow_dispatch:
 
@@ -30,6 +31,9 @@ jobs:
           - name: triposr
             context: runpod/triposr
             image: garmentor-3d
+          - name: cloth-sim
+            context: runpod/cloth-sim
+            image: garmentor-cloth-sim
     steps:
       - uses: actions/checkout@v4
 

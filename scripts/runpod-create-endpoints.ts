@@ -91,6 +91,16 @@ const specs: Spec[] = [
     idleTimeout: 10,
     flashboot: true,
   },
+  {
+    name: "garmentor-cloth-sim",
+    imageName: `ghcr.io/${OWNER}/garmentor-cloth-sim:latest`,
+    containerDiskInGb: 40,
+    gpuTypeIds: ["NVIDIA GeForce RTX 4090", "NVIDIA L40S"],
+    workersMin: 0,
+    workersMax: 2,
+    idleTimeout: 10,
+    flashboot: true,
+  },
 ];
 
 async function api<T = unknown>(
@@ -208,6 +218,7 @@ async function main(): Promise<void> {
     RUNPOD_PATTERN_ENDPOINT_URL: `https://api.runpod.ai/v2/${ids["garmentor-pattern"]}/runsync`,
     RUNPOD_EDIT_ENDPOINT_URL: `https://api.runpod.ai/v2/${ids["garmentor-flux-edit"]}/runsync`,
     RUNPOD_GENERATE_ENDPOINT_URL: `https://api.runpod.ai/v2/${ids["garmentor-3d"]}/runsync`,
+    RUNPOD_CLOTH_SIM_ENDPOINT_URL: `https://api.runpod.ai/v2/${ids["garmentor-cloth-sim"]}/runsync`,
   };
   await upsertEnvLocal(updates);
   console.log("\n.env.local updated:");
