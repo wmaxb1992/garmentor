@@ -80,6 +80,9 @@ const specs: Spec[] = [
     workersMax: 2,
     idleTimeout: 10,
     flashboot: true,
+    // FLUX.1-schnell is gated; HF_TOKEN must be set on the endpoint so
+    // diffusers can pull weights at first-request cold start.
+    env: process.env.HF_TOKEN ? { HF_TOKEN: process.env.HF_TOKEN } : {},
   },
   {
     name: "garmentor-3d",
