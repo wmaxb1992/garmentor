@@ -47,7 +47,7 @@ type Spec = {
 const specs: Spec[] = [
   {
     name: "garmentor-chat-vlm",
-    imageName: "runpod/worker-v1-vllm:v2.5.0stable-cuda12.1.0",
+    imageName: "runpod/worker-v1-vllm:v2.18.1",
     containerDiskInGb: 60,
     gpuTypeIds: ["NVIDIA L40S", "NVIDIA A100 80GB PCIe", "NVIDIA H100 PCIe"],
     workersMin: 0,
