@@ -11,6 +11,8 @@ import {
   type ReactNode,
 } from "react";
 import { nanoId } from "@/lib/utils";
+import type { GcdPattern } from "@/lib/garment-gpt";
+import type { FabricKey } from "@/lib/fabrics";
 
 export type Seam = {
   id: string;
@@ -20,12 +22,20 @@ export type Seam = {
 
 export type Model = {
   id: string;
-  glbUrl: string;
+  glbUrl?: string;
   description?: string;
   bytes: number;
   createdAt: number;
   seams: Seam[];
   sourceImageUrl?: string;
+  gcdUrl?: string;
+  gcd?: GcdPattern;
+};
+
+export type ViewerSettings = {
+  fabric: FabricKey;
+  showAvatar: boolean;
+  avatarScale: number;
 };
 
 export type WorkspaceState = {
@@ -35,6 +45,7 @@ export type WorkspaceState = {
   isEditing: boolean;
   pendingImageUrl: string | null;
   pendingImageData: { bytes: Uint8Array; mediaType: string } | null;
+  viewer: ViewerSettings;
 };
 
 export type Project = {
@@ -56,14 +67,27 @@ type ProjectIndex = {
   projects: Array<{ id: string; name: string; lastModified: number }>;
 };
 
-const emptyWorkspace: WorkspaceState = { 
-  models: {}, 
+const emptyWorkspace: WorkspaceState = {
+  models: {},
   activeModelId: null,
   isGenerating: false,
   isEditing: false,
   pendingImageUrl: null,
   pendingImageData: null,
+  viewer: { fabric: "default", showAvatar: true, avatarScale: 1 },
 };
+
+function normalizeWorkspace(s: Partial<WorkspaceState> | undefined): WorkspaceState {
+  return {
+    models: s?.models ?? {},
+    activeModelId: s?.activeModelId ?? null,
+    isGenerating: false,
+    isEditing: false,
+    pendingImageUrl: null,
+    pendingImageData: null,
+    viewer: { ...emptyWorkspace.viewer, ...(s?.viewer ?? {}) },
+  };
+}
 
 function getProjectKey(id: string): string {
   return `garmentor:project:${id}`;
@@ -151,6 +175,7 @@ export type WorkspaceContextValue = {
   currentProject: Project | null;
   availableProjects: Array<{ id: string; name: string; lastModified: number }>;
   addModel: (input: Omit<Model, "createdAt" | "seams"> & { seams?: Seam[] }) => void;
+  attachPattern: (modelId: string, gcdUrl: string, gcd: GcdPattern) => void;
   setActive: (id: string | null) => void;
   addSeam: (modelId: string, vertexIndices: number[]) => string;
   removeSeam: (modelId: string, seamId: string) => void;
@@ -159,6 +184,7 @@ export type WorkspaceContextValue = {
   setEditing: (isEditing: boolean) => void;
   setPendingImage: (url: string | null, data: { bytes: Uint8Array; mediaType: string } | null) => void;
   approvePendingImage: () => Promise<void>;
+  setViewer: (next: Partial<ViewerSettings>) => void;
   newProject: () => void;
   saveCurrentProject: (name?: string) => void;
   loadProject: (id: string) => void;
@@ -216,7 +242,13 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const addModel = useCallback<WorkspaceContextValue["addModel"]>((input) => {
     setState((prev) => {
       if (prev.models[input.id]) {
-        return { ...prev, activeModelId: input.id, isGenerating: false };
+        const merged: Model = { ...prev.models[input.id], ...input };
+        return {
+          ...prev,
+          models: { ...prev.models, [input.id]: merged },
+          activeModelId: input.id,
+          isGenerating: false,
+        };
       }
       const next: Model = {
         ...input,
@@ -226,6 +258,24 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       const models = trimToCap({ ...prev.models, [next.id]: next });
       return { ...prev, models, activeModelId: next.id, isGenerating: false };
     });
+  }, []);
+
+  const attachPattern = useCallback<WorkspaceContextValue["attachPattern"]>(
+    (modelId, gcdUrl, gcd) => {
+      setState((prev) => {
+        const m = prev.models[modelId];
+        if (!m) return prev;
+        return {
+          ...prev,
+          models: { ...prev.models, [modelId]: { ...m, gcdUrl, gcd } },
+        };
+      });
+    },
+    [],
+  );
+
+  const setViewer = useCallback<WorkspaceContextValue["setViewer"]>((next) => {
+    setState((prev) => ({ ...prev, viewer: { ...prev.viewer, ...next } }));
   }, []);
 
   const setActive = useCallback<WorkspaceContextValue["setActive"]>((id) => {
@@ -348,8 +398,8 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   const loadProjectCallback = useCallback((id: string) => {
     const project = loadProject(id);
     if (!project) return;
-    
-    setState(project.workspace);
+
+    setState(normalizeWorkspace(project.workspace));
     setCurrentProject(project);
     
     // Update last modified
@@ -385,19 +435,21 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
   }, [currentProject]);
 
   const value = useMemo<WorkspaceContextValue>(
-    () => ({ 
+    () => ({
       state,
       currentProject,
       availableProjects,
-      addModel, 
-      setActive, 
-      addSeam, 
-      removeSeam, 
-      clearSeams, 
-      setGenerating, 
+      addModel,
+      attachPattern,
+      setActive,
+      addSeam,
+      removeSeam,
+      clearSeams,
+      setGenerating,
       setEditing,
       setPendingImage,
       approvePendingImage,
+      setViewer,
       newProject,
       saveCurrentProject,
       loadProject: loadProjectCallback,
@@ -409,6 +461,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       currentProject,
       availableProjects,
       addModel,
+      attachPattern,
       setActive,
       addSeam,
       removeSeam,
@@ -417,6 +470,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
       setEditing,
       setPendingImage,
       approvePendingImage,
+      setViewer,
       newProject,
       saveCurrentProject,
       loadProjectCallback,

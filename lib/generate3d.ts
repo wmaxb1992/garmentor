@@ -22,39 +22,51 @@ export async function generate3dFromBytes(
   imageBytes: Uint8Array,
   mediaType: string,
 ): Promise<Generate3dResult> {
-  const endpoint = process.env.MODAL_GENERATE_URL;
+  const endpoint = process.env.RUNPOD_GENERATE_ENDPOINT_URL;
+  const apiKey = process.env.RUNPOD_API_KEY;
   if (!endpoint) {
     throw new Error(
-      "MODAL_GENERATE_URL is not set. Deploy modal/app.py with `modal deploy modal/app.py` and set MODAL_GENERATE_URL in .env.local.",
+      "RUNPOD_GENERATE_ENDPOINT_URL is not set. Deploy runpod/ and set it in .env.local.",
     );
   }
-
-  const form = new FormData();
-  form.append(
-    "image",
-    new Blob([imageBytes as unknown as ArrayBuffer], { type: mediaType }),
-    "input.png",
-  );
-
-  const headers: Record<string, string> = {};
-  if (process.env.MODAL_AUTH_TOKEN) {
-    headers["Authorization"] = `Bearer ${process.env.MODAL_AUTH_TOKEN}`;
+  if (!apiKey) {
+    throw new Error("RUNPOD_API_KEY is not set.");
   }
+
+  const payload = {
+    input: {
+      image: Buffer.from(imageBytes).toString("base64"),
+      remove_background: true,
+    },
+  };
 
   const res = await fetch(endpoint, {
     method: "POST",
-    body: form,
-    headers,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify(payload),
   });
-
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new Error(
-      `Modal generate endpoint returned ${res.status}: ${text.slice(0, 500)}`,
+      `RunPod generate endpoint returned ${res.status}: ${text.slice(0, 500)}`,
     );
   }
 
-  const glbBuffer = new Uint8Array(await res.arrayBuffer());
+  const result = (await res.json()) as {
+    status?: string;
+    error?: string;
+    output?: { glb?: string; error?: string };
+  };
+  if (result.status === "FAILED" || result.error) {
+    throw new Error(`RunPod 3D generation failed: ${result.error ?? "unknown"}`);
+  }
+  const output = result.output ?? (result as unknown as { glb?: string });
+  if (!output?.glb) throw new Error("RunPod 3D response missing glb");
+
+  const glbBuffer = Buffer.from(output.glb, "base64");
 
   await mkdir(PUBLIC_DIR, { recursive: true });
   const id = nanoId();

@@ -12,8 +12,9 @@ type SketchData = {
   measurements: ReturnType<typeof measureMesh>;
 };
 
-function FlatSketchInner({ model }: { model: Model }) {
-  const { scene } = useGLTF(model.glbUrl);
+function FlatSketchInner({ model }: { model: Model & { glbUrl: string } }) {
+  const gltf = useGLTF(model.glbUrl) as unknown as { scene: import("three").Group };
+  const scene = gltf.scene;
 
   const data = useMemo<SketchData | null>(() => {
     if (!scene) return null;
@@ -109,7 +110,7 @@ function Row({ label, value }: { label: string; value: string }) {
   );
 }
 
-export function FlatSketch({ model }: { model: Model }) {
+export function FlatSketch({ model }: { model: Model & { glbUrl: string } }) {
   return (
     <Suspense
       fallback={

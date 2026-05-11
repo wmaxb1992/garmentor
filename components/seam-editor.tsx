@@ -14,17 +14,15 @@ import {
 } from "@/lib/fabrics";
 import { detectDarkSeams } from "@/lib/seam-detect";
 
-export function SeamEditor({ model }: { model: Model }) {
-  const { addSeam, removeSeam, clearSeams } = useWorkspace();
+export function SeamEditor({ model }: { model: Model & { glbUrl: string } }) {
+  const { addSeam, removeSeam, clearSeams, state, setViewer } = useWorkspace();
+  const { fabric, showAvatar, avatarScale } = state.viewer;
   const [drawMode, setDrawMode] = useState(false);
   const [graph, setGraph] = useState<SeamGraph | null>(null);
   const [luminance, setLuminance] = useState<Float32Array | null>(null);
   const [anchors, setAnchors] = useState<number[]>([]);
   const [path, setPath] = useState<number[]>([]);
-  const [fabric, setFabric] = useState<FabricKey>("default");
   const [autoBusy, setAutoBusy] = useState(false);
-  const [showAvatar, setShowAvatar] = useState(true);
-  const [avatarScale, setAvatarScale] = useState(1);
 
   const onReady = useCallback((g: SeamGraph, lum: Float32Array | null) => {
     setGraph(g);
@@ -146,24 +144,13 @@ export function SeamEditor({ model }: { model: Model }) {
         >
           {autoBusy ? "Detecting…" : "Auto-detect seams"}
         </button>
-        <button
-          type="button"
-          onClick={() => {
-            // TODO: Implement DXF export
-            alert("DXF export will be implemented when Modal flatten endpoint is deployed");
-          }}
-          disabled={model.seams.length === 0}
-          className="rounded-md border border-purple-600 bg-purple-600 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-40"
-          title="Export flattened pattern pieces as DXF files"
-        >
-          Export DXF
-        </button>
+        {/* DXF export now lives in the Pattern tab where it has real panels to export. */}
         <div className="ml-auto flex items-center gap-2">
           <label className="flex items-center gap-1.5 text-xs text-zinc-500 dark:text-zinc-400">
             <input
               type="checkbox"
               checked={showAvatar}
-              onChange={(e) => setShowAvatar(e.target.checked)}
+              onChange={(e) => setViewer({ showAvatar: e.target.checked })}
               className="rounded"
             />
             Avatar
@@ -176,7 +163,7 @@ export function SeamEditor({ model }: { model: Model }) {
               max="1.5"
               step="0.1"
               value={avatarScale}
-              onChange={(e) => setAvatarScale(parseFloat(e.target.value))}
+              onChange={(e) => setViewer({ avatarScale: parseFloat(e.target.value) })}
               disabled={!showAvatar}
               className="w-16"
             />
@@ -186,7 +173,7 @@ export function SeamEditor({ model }: { model: Model }) {
             Fabric
             <select
               value={fabric}
-              onChange={(e) => setFabric(e.target.value as FabricKey)}
+              onChange={(e) => setViewer({ fabric: e.target.value as FabricKey })}
               className="rounded-md border border-zinc-300 bg-white px-2 py-1 text-xs text-zinc-800 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-100"
             >
               {FABRIC_ORDER.map((key) => (

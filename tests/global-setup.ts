@@ -1,8 +1,6 @@
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
 
-// Tiny 1x1 PNG (89 bytes). Enough to wake the Modal containers — quality
-// of the response is irrelevant; we just need weights loaded into VRAM.
 const TINY_PNG_B64 =
   "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII=";
 
@@ -25,32 +23,22 @@ async function loadDotEnv(path: string): Promise<Env> {
   }
 }
 
-async function warmEdit(url: string, token: string | undefined): Promise<void> {
-  const png = Buffer.from(TINY_PNG_B64, "base64");
-  const form = new FormData();
-  form.append("image", new Blob([png], { type: "image/png" }), "warm.png");
-  form.append("instruction", "warmup");
-  form.append("steps", "10");
-  const headers: Record<string, string> = {};
-  if (token) headers.Authorization = `Bearer ${token}`;
+async function warmRunPod(
+  url: string,
+  apiKey: string | undefined,
+  payload: Record<string, unknown>,
+  label: string,
+): Promise<void> {
+  const headers: Record<string, string> = { "Content-Type": "application/json" };
+  if (apiKey) headers.Authorization = `Bearer ${apiKey}`;
   const t0 = Date.now();
-  const res = await fetch(url, { method: "POST", body: form, headers });
+  const res = await fetch(url, {
+    method: "POST",
+    body: JSON.stringify({ input: payload }),
+    headers,
+  });
   await res.arrayBuffer().catch(() => undefined);
-  const ms = Date.now() - t0;
-  console.log(`[warmup] edit endpoint -> ${res.status} in ${ms}ms`);
-}
-
-async function warmMesh(url: string, token: string | undefined): Promise<void> {
-  const png = Buffer.from(TINY_PNG_B64, "base64");
-  const form = new FormData();
-  form.append("image", new Blob([png], { type: "image/png" }), "warm.png");
-  const headers: Record<string, string> = {};
-  if (token) headers.Authorization = `Bearer ${token}`;
-  const t0 = Date.now();
-  const res = await fetch(url, { method: "POST", body: form, headers });
-  await res.arrayBuffer().catch(() => undefined);
-  const ms = Date.now() - t0;
-  console.log(`[warmup] mesh endpoint -> ${res.status} in ${ms}ms`);
+  console.log(`[warmup] ${label} -> ${res.status} in ${Date.now() - t0}ms`);
 }
 
 export default async function globalSetup() {
@@ -62,28 +50,42 @@ export default async function globalSetup() {
     ...(await loadDotEnv(resolve(process.cwd(), ".env.local"))),
     ...process.env,
   };
-  const editUrl = env.MODAL_EDIT_URL;
-  const meshUrl = env.MODAL_GENERATE_URL;
-  const token = env.MODAL_AUTH_TOKEN;
-  if (!editUrl && !meshUrl) {
-    console.log("[warmup] no Modal URLs in env; skipping");
+  const apiKey = env.RUNPOD_API_KEY;
+  const tasks: Promise<unknown>[] = [];
+  if (env.RUNPOD_EDIT_ENDPOINT_URL) {
+    tasks.push(
+      warmRunPod(
+        env.RUNPOD_EDIT_ENDPOINT_URL,
+        apiKey,
+        { image: TINY_PNG_B64, instruction: "warmup", steps: 1 },
+        "edit",
+      ).catch((e) => console.log("[warmup] edit failed:", String(e))),
+    );
+  }
+  if (env.RUNPOD_GENERATE_ENDPOINT_URL) {
+    tasks.push(
+      warmRunPod(
+        env.RUNPOD_GENERATE_ENDPOINT_URL,
+        apiKey,
+        { image: TINY_PNG_B64 },
+        "generate",
+      ).catch((e) => console.log("[warmup] generate failed:", String(e))),
+    );
+  }
+  if (env.RUNPOD_PATTERN_ENDPOINT_URL) {
+    tasks.push(
+      warmRunPod(
+        env.RUNPOD_PATTERN_ENDPOINT_URL,
+        apiKey,
+        { image: TINY_PNG_B64 },
+        "pattern",
+      ).catch((e) => console.log("[warmup] pattern failed:", String(e))),
+    );
+  }
+  if (tasks.length === 0) {
+    console.log("[warmup] no RunPod URLs in env; skipping");
     return;
   }
-  const tasks: Promise<unknown>[] = [];
-  if (editUrl) {
-    tasks.push(
-      warmEdit(editUrl, token).catch((e) =>
-        console.log("[warmup] edit failed (non-fatal):", String(e)),
-      ),
-    );
-  }
-  if (meshUrl) {
-    tasks.push(
-      warmMesh(meshUrl, token).catch((e) =>
-        console.log("[warmup] mesh failed (non-fatal):", String(e)),
-      ),
-    );
-  }
-  console.log("[warmup] pre-warming Modal containers in parallel…");
+  console.log("[warmup] pre-warming RunPod endpoints in parallel…");
   await Promise.all(tasks);
 }
