@@ -1,10 +1,10 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { gcdToDxf, panelToPolyline, type DxfUnit } from "@/lib/gcd-to-dxf";
 import type { GcdPattern } from "@/lib/garment-gpt";
 import { useActiveModel, useWorkspace } from "@/lib/workspace-store";
-import { GatesPanel, useGates } from "@/components/gates-panel";
+import { GatesPanel, applyGateFixes, useGates } from "@/components/gates-panel";
 
 const PALETTE = [
   "#0ea5e9",
@@ -28,6 +28,33 @@ export function PatternViewer() {
   const [selected, setSelected] = useState<string | null>(null);
   const pattern = active?.gcd as GcdPattern | undefined;
   const gates = useGates(pattern);
+  const history = useRef<GcdPattern[]>([]);
+
+  const commit = (next: GcdPattern) => {
+    if (!active) return;
+    if (pattern) history.current.push(pattern);
+    if (history.current.length > 25) history.current.shift();
+    attachPattern(active.id, active.gcdUrl ?? "", next);
+  };
+
+  const undo = () => {
+    const prev = history.current.pop();
+    if (prev && active) {
+      attachPattern(active.id, active.gcdUrl ?? "", prev);
+    }
+  };
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === "z" && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+      }
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [active?.id]);
 
   const resizePanel = (name: string, newW: number, newH: number) => {
     if (!pattern || !active) return;
@@ -54,7 +81,13 @@ export function PatternViewer() {
       cx + (x - cx) * sx,
       cy + (y - cy) * sy,
     ]);
-    attachPattern(active.id, active.gcdUrl ?? "", next);
+    commit(next);
+  };
+
+  const applyFixes = () => {
+    if (!pattern || !gates) return;
+    const next = applyGateFixes(pattern, gates);
+    commit(next);
   };
 
   const panels = useMemo(() => {
@@ -188,7 +221,7 @@ export function PatternViewer() {
           </button>
         </div>
       </div>
-      <GatesPanel result={gates} />
+      <GatesPanel result={gates} onApplyFix={applyFixes} />
       <div className="flex min-h-0 flex-1">
         <div className="flex-1 overflow-auto bg-zinc-50 p-4 dark:bg-zinc-900">
           <svg

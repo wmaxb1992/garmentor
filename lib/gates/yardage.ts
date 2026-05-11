@@ -60,7 +60,13 @@ export function yardageCheck(
     }
     area = Math.abs(area) / 2;
     totalAreaCm2 += area;
-    panels.push({ name, w: maxX - minX, h: maxY - minY, areaCm2: area });
+    let w = maxX - minX;
+    let h = maxY - minY;
+    // Rotate 90° if it makes the panel narrower-than-fabric AND taller (better packing).
+    if (w > h && h <= fabricWidthCm) {
+      [w, h] = [h, w];
+    }
+    panels.push({ name, w, h, areaCm2: area });
   }
 
   panels.sort((a, b) => b.h - a.h);

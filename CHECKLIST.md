@@ -262,6 +262,26 @@ When the user attaches 2-3 photos (front / back / side), one Pattern Agent runs 
 
 ---
 
+### Phase 8 — Continuous improvements (in-flight)
+
+Smaller-scope improvements that get layered on top of Phases 1-7. Not gated; merged piecewise.
+
+- [x] **Unit tests** under `tests/unit/`: gates, modifier, reconciler, stitch-graph. Fixture is the real GarmentGPT `my_garment.json` output. Runs via `bun test tests/unit/`.
+- [x] **Yardage auto-rotation**: rotate panels 90° in the row-pack when it makes them narrower than fabric and improves density.
+- [x] **Actionable gate deltas**: `runAllGates` now returns `proposedDeltas` mapping stitch-mismatches → length corrections and oversized panels → width corrections. `applyGateFixes(pattern, gates)` returns a patched GCD.
+- [x] **Apply suggested fixes button**: the gates banner exposes an amber "Apply suggested fixes (N)" button that pushes the modifier output into the workspace store. Pairs with undo (cmd/ctrl-Z).
+- [x] **Spec-edit undo**: 25-step history stack in `PatternViewer`. cmd/ctrl-Z rolls back any panel resize or "apply fixes" action.
+- [ ] **Spec-edit redo** (cmd/ctrl-shift-Z).
+- [ ] **Keyboard navigation**: arrow keys to cycle the selected panel.
+- [ ] **Mesh silhouette overlay** in Pattern tab — project the TripoSR GLB front-view silhouette behind the GCD panels at the same scale so the user can eyeball pattern-vs-mesh fit without leaving the tab.
+- [ ] **Playwright smoke** that loads the app behind PasswordGate, injects a fixture model via the workspace context, and verifies all 4 tabs render.
+- [ ] **DXF in-browser preview** before download — render the LWPOLYLINE entities client-side as a confirmation view.
+- [ ] **`bun test:e2e`** script in package.json wiring the existing Playwright setup.
+- [ ] **Critic-cycle live progress** — server-side `streamObject` so the chat UI tickers each cycle as it happens instead of dumping all 3 at the end.
+- [ ] **Real grade rules per garment category** (jacket / shirt / pants) replacing the bbox heuristic in `modifier.ts`. Largest accuracy lever still open.
+- [ ] **Warm-worker option** behind a UI toggle: prompt the user "keep chat worker warm? +$0.77/hr" before sending the first message; default off.
+- [ ] **Project export/import** to a `.garmentor.json` file for sharing.
+
 ## 7. Open infra todos
 
 - [ ] Delete the old broken Quick Deploy chat endpoint `xezftfvzsmw722` (user-only action; saves 3 worker slots)

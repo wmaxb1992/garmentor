@@ -3,12 +3,19 @@
 import { useMemo } from "react";
 import type { GcdPattern } from "@/lib/garment-gpt";
 import { runAllGates, type GatesResult } from "@/lib/gates/run-all";
+import { applyDeltas } from "@/lib/agents/modifier";
 
 export function useGates(pattern: GcdPattern | undefined): GatesResult | null {
   return useMemo(() => (pattern ? runAllGates(pattern) : null), [pattern]);
 }
 
-export function GatesPanel({ result }: { result: GatesResult | null }) {
+export function GatesPanel({
+  result,
+  onApplyFix,
+}: {
+  result: GatesResult | null;
+  onApplyFix?: (next: GcdPattern, summary: string) => void;
+}) {
   if (!result) return null;
   const items = [
     {
@@ -51,6 +58,32 @@ export function GatesPanel({ result }: { result: GatesResult | null }) {
           {it.pass ? "✓" : "✗"} {it.label}
         </span>
       ))}
+      {result.proposedDeltas.length > 0 && onApplyFix && (
+        <button
+          type="button"
+          onClick={() => {
+            // Caller has the source pattern; we pass back instructions.
+            const summary = result.proposedDeltas
+              .map(
+                (d) =>
+                  `${d.panel ?? "all"}${d.length_cm ? ` length${d.length_cm > 0 ? "+" : ""}${d.length_cm.toFixed(1)}` : ""}${d.width_cm ? ` width${d.width_cm > 0 ? "+" : ""}${d.width_cm.toFixed(1)}` : ""}${d.chest_cm ? ` chest${d.chest_cm > 0 ? "+" : ""}${d.chest_cm.toFixed(1)}` : ""}`,
+              )
+              .join(" · ");
+            // Caller computes the fixed pattern using its own GCD reference.
+            onApplyFix({} as GcdPattern, summary);
+          }}
+          className="ml-auto rounded-md border border-amber-500 bg-amber-500 px-2.5 py-0.5 text-xs font-medium text-white hover:bg-amber-600"
+          title={result.proposedDeltas
+            .map((d) => JSON.stringify(d))
+            .join("\n")}
+        >
+          Apply suggested fixes ({result.proposedDeltas.length})
+        </button>
+      )}
     </div>
   );
+}
+
+export function applyGateFixes(pattern: GcdPattern, gates: GatesResult): GcdPattern {
+  return applyDeltas(pattern, gates.proposedDeltas);
 }

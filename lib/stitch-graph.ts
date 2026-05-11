@@ -176,6 +176,7 @@ export function buildClothInput(pattern: GcdPattern): ClothInput {
     const gcd = pattern.pattern.panels[name];
     if (!gcd) continue;
     const tri = triangulatePanel(gcd);
+    if (tri.vertices2D.length < 6 || tri.triangles.length < 3) continue; // skip empty panels
     nameToIndex[name] = panels.length;
     panels.push({
       name,
