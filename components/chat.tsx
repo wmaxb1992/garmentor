@@ -58,6 +58,25 @@ type DrapePatternToolOutput =
     }
   | { ok: false; error: string };
 
+type RefinePatternToolOutput =
+  | {
+      ok: true;
+      refinedPatternId: string;
+      refinedGcdUrl: string;
+      cycles: Array<{
+        cycle: number;
+        maxStretch: number;
+        maxCompression: number;
+        shouldModify: boolean;
+        reason: string;
+        deltaCount: number;
+      }>;
+      finalMetrics: { maxStretch: number; maxCompression: number; meanStretch: number };
+      finalDrapedGlbUrl: string;
+      converged: boolean;
+    }
+  | { ok: false; error: string };
+
 export function Chat() {
   const { messages, sendMessage, status, stop, error } = useChat({
     transport: new DefaultChatTransport({ api: "/api/chat" }),
@@ -167,6 +186,17 @@ export function Chat() {
                           state={part.state}
                           output={
                             part.output as DrapePatternToolOutput | undefined
+                          }
+                        />
+                      );
+                    }
+                    if (part.type === "tool-refine_pattern") {
+                      return (
+                        <RefineToolPart
+                          key={i}
+                          state={part.state}
+                          output={
+                            part.output as RefinePatternToolOutput | undefined
                           }
                         />
                       );
@@ -362,6 +392,100 @@ function EditToolPart({
     return (
       <div className="rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
         Tool failed.
+      </div>
+    );
+  }
+  return null;
+}
+
+function RefineToolPart({
+  state,
+  output,
+}: {
+  state: string;
+  output?: RefinePatternToolOutput;
+}) {
+  const { attachPattern, attachDrape, addModel, setActive, state: ws } = useWorkspace();
+
+  useEffect(() => {
+    if (state !== "output-available" || !output || !output.ok) return;
+    let cancelled = false;
+    // Bind refined pattern to a new workspace model so the user can compare.
+    addModel({
+      id: output.refinedPatternId,
+      bytes: 0,
+      description: "Refined pattern",
+      gcdUrl: output.refinedGcdUrl,
+    });
+    fetch(output.refinedGcdUrl)
+      .then((r) => (r.ok ? r.json() : null))
+      .then((gcd) => {
+        if (cancelled || !gcd) return;
+        attachPattern(output.refinedPatternId, output.refinedGcdUrl, gcd);
+        attachDrape(
+          output.refinedPatternId,
+          output.finalDrapedGlbUrl,
+          output.finalMetrics,
+        );
+      })
+      .catch(() => {});
+    return () => {
+      cancelled = true;
+    };
+  }, [state, output, addModel, attachPattern, attachDrape]);
+
+  if (state === "input-streaming" || state === "input-available") {
+    return (
+      <div className="rounded-xl border border-dashed border-zinc-300 bg-white/50 px-3 py-2 text-xs text-zinc-500 dark:border-zinc-700 dark:bg-zinc-900/40">
+        Refining pattern (drape → critic → re-grade, up to 3 cycles)…
+      </div>
+    );
+  }
+  if (state === "output-available" && output) {
+    if (!output.ok) {
+      return (
+        <div className="rounded-xl border border-red-300 bg-red-50 px-3 py-2 text-xs text-red-700 dark:border-red-800 dark:bg-red-950 dark:text-red-300">
+          {output.error}
+        </div>
+      );
+    }
+    const isActive = ws.activeModelId === output.refinedPatternId;
+    return (
+      <div className="rounded-xl border border-zinc-200 bg-white p-3 dark:border-zinc-800 dark:bg-zinc-950">
+        <div className="text-sm font-medium text-zinc-900 dark:text-zinc-100">
+          Refined in {output.cycles.length} cycle{output.cycles.length === 1 ? "" : "s"}
+          {output.converged ? " · converged ✓" : " · hit cycle cap"}
+        </div>
+        <ul className="mt-2 space-y-1 text-xs text-zinc-600 dark:text-zinc-300">
+          {output.cycles.map((c) => (
+            <li key={c.cycle}>
+              cycle {c.cycle}: max stretch {c.maxStretch.toFixed(2)}, max compression{" "}
+              {c.maxCompression.toFixed(2)}
+              {c.shouldModify
+                ? ` → ${c.deltaCount} grade delta${c.deltaCount === 1 ? "" : "s"} (${c.reason})`
+                : " → converged"}
+            </li>
+          ))}
+        </ul>
+        <div className="mt-2 flex items-center justify-between gap-3">
+          <span className="text-xs text-zinc-500 dark:text-zinc-400">
+            final: max stretch {output.finalMetrics.maxStretch.toFixed(2)} · max
+            compression {output.finalMetrics.maxCompression.toFixed(2)}
+          </span>
+          <button
+            type="button"
+            onClick={() => setActive(output.refinedPatternId)}
+            disabled={isActive}
+            className={cn(
+              "rounded-md border px-2.5 py-1 text-xs font-medium transition",
+              isActive
+                ? "border-emerald-600 bg-emerald-600/10 text-emerald-700 dark:text-emerald-400"
+                : "border-zinc-300 bg-white text-zinc-800 hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-950 dark:text-zinc-100 dark:hover:bg-zinc-900",
+            )}
+          >
+            {isActive ? "Active" : "Set as active"}
+          </button>
+        </div>
       </div>
     );
   }

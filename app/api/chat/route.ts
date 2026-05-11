@@ -11,8 +11,10 @@ import { dataUrlToBytes, generate3dFromBytes } from "@/lib/generate3d";
 import { editGarmentImage, readPublicGeneratedFile } from "@/lib/edit-image";
 import { generatePatternFromBytes } from "@/lib/garment-gpt";
 import { drapeWithWarp } from "@/lib/cloth-sim";
-import { readFile } from "node:fs/promises";
+import { refinePattern } from "@/lib/workflow/refine-pattern";
+import { readFile, writeFile } from "node:fs/promises";
 import { join } from "node:path";
+import { nanoId } from "@/lib/utils";
 
 export const maxDuration = 600;
 export const runtime = "nodejs";
@@ -26,6 +28,7 @@ Tools available:
 - \`generate_3d_model\` — generates a 3D mesh (.glb) from a garment image for visualization on the workspace 3D viewer.
 - \`edit_garment_image\` — natural-language edit on a photo (e.g. "change patch pockets to welt pockets") returning a new image.
 - \`drape_pattern\` — given a previously generated pattern, runs an NVIDIA Warp XPBD cloth simulation to drape the stitched panels on an avatar. Returns a draped GLB + fit metrics (stretch, compression). Call this when the user wants to validate fit, see the garment "on body", or detect pulling/excess fabric. Requires a prior \`generate_pattern\` call; pass the resulting \`patternId\`.
+- \`refine_pattern\` — agentic refinement loop: drape → critic → grade-delta → re-drape, up to 3 cycles. Use when the user supplies a reference measurement (e.g. "back length 72 cm") AND wants the system to self-correct until fit converges. Pass the prior \`patternId\` + \`referenceMeasurement\`. Returns the converged pattern + drape + per-cycle history.
 
 Tool-firing policy:
 - When the user wants both the pattern and a preview (the typical case after attaching a photo), call \`generate_pattern\` AND \`generate_3d_model\` IN PARALLEL in the same step. They share the source image and both results bind to the same workspace item.
@@ -226,6 +229,65 @@ export async function POST(req: Request) {
               bytes: out.bytes,
               description,
               sourceImageUrl: out.sourceImageUrl,
+            };
+          } catch (err) {
+            return {
+              ok: false as const,
+              error: err instanceof Error ? err.message : String(err),
+            };
+          }
+        },
+      }),
+      refine_pattern: tool({
+        description:
+          "Run the critic loop: drape the pattern, look at fit metrics + reference measurement, propose grade deltas, re-drape, up to 3 cycles. Returns the converged pattern + drape and a per-cycle history. Use when the user wants the system to self-correct a pattern instead of accepting the first generation.",
+        inputSchema: z.object({
+          patternId: z.string().describe("`id` returned by an earlier generate_pattern call."),
+          referenceMeasurement: z
+            .object({
+              kind: z.enum(["back_length", "chest_girth", "total_width"]),
+              valueCm: z.number().positive(),
+            })
+            .optional(),
+          fabric: z
+            .enum(["cotton", "denim", "silk", "leather", "wool", "linen"])
+            .optional(),
+          maxCycles: z.number().int().min(1).max(5).optional(),
+        }),
+        execute: async ({ patternId, referenceMeasurement, fabric, maxCycles }) => {
+          try {
+            const path = join(process.cwd(), "public", "generated", `${patternId}.gcd.json`);
+            const raw = await readFile(path, "utf8");
+            const pattern = JSON.parse(raw);
+            const result = await refinePattern({
+              pattern,
+              referenceMeasurement,
+              fabric,
+              maxCycles,
+            });
+            // Persist the refined pattern so the UI Pattern tab can pick it up.
+            const refinedId = nanoId();
+            const refinedFilename = `${refinedId}.gcd.json`;
+            await writeFile(
+              join(process.cwd(), "public", "generated", refinedFilename),
+              JSON.stringify(result.finalPattern),
+              "utf8",
+            );
+            return {
+              ok: true as const,
+              refinedPatternId: refinedId,
+              refinedGcdUrl: `/generated/${refinedFilename}`,
+              cycles: result.cycles.map((c) => ({
+                cycle: c.cycle,
+                maxStretch: c.drape.metrics.maxStretch,
+                maxCompression: c.drape.metrics.maxCompression,
+                shouldModify: c.critique.should_modify,
+                reason: c.critique.reason,
+                deltaCount: c.critique.deltas.length,
+              })),
+              finalMetrics: result.finalDrape.metrics,
+              finalDrapedGlbUrl: result.finalDrape.drapedGlbUrl,
+              converged: result.converged,
             };
           } catch (err) {
             return {

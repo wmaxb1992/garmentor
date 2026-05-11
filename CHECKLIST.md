@@ -228,16 +228,16 @@ Stitch the 2D panels, drape under gravity (optional avatar mesh collision), surf
 - [ ] Deploy script run
 - [ ] First successful drape in browser
 
-### Phase 5 — Critic loop (agentic refinement) ⬜
+### Phase 5 — Critic loop (agentic refinement) ✅ DONE
 
-Self-correcting pipeline: pattern + mesh + sim fan out concurrently, a critic scores, a modifier proposes grade deltas, re-sim, repeat up to 3 cycles. Native (no BeeAI dep yet).
+Self-correcting pipeline: drape → critic → grade-delta → re-drape, up to 3 cycles. Native (no BeeAI dep yet). Critic is a JSON-only generateObject call against the same chat-vlm endpoint.
 
-- [ ] `lib/agents/critic.ts` — JSON-only LLM call: `{ pattern, drapeMetrics, referenceMeasurement?, meshSilhouette? } → { should_modify, deltas, reason }`
-- [ ] `lib/agents/modifier.ts` — applies deltas to a `GcdPattern` via grade-point translation (CB / CF / hem) instead of uniform scaling
-- [ ] `lib/workflow/refine-pattern.ts` — orchestrator: critic ↔ modifier ↔ cloth-sim loop, 3-iteration cap, early-exit when critic says "good fit"
-- [ ] `/api/chat` `refine_pattern` tool wraps the workflow; UI streams "cycle N: max stretch X → modifying chest +3 cm"
-- [ ] `components/chat.tsx` `RefineToolPart` renders the per-cycle log + final verdict
-- [ ] System prompt: prefer `refine_pattern` over plain `generate_pattern` when the user supplied a reference measurement
+- [x] `lib/agents/critic.ts` — `generateObject` with a Zod schema; input = panel dim summary + drape metrics + optional reference measurement; output = `{ should_modify, reason, deltas[] }`
+- [x] `lib/agents/modifier.ts` — applies deltas via length/chest/sleeve/width heuristic grade-point translation (real grade points are future work)
+- [x] `lib/workflow/refine-pattern.ts` — drape→critic→modify loop, early-exit on convergence
+- [x] `/api/chat` `refine_pattern` tool: loads prior GCD by id, runs the workflow, persists the refined GCD under a new id, returns cycles + final metrics
+- [x] `components/chat.tsx` `RefineToolPart` renders the per-cycle log (max stretch / max compression / reason) and "Set as active" the refined pattern
+- [x] System prompt advertises the tool; assistant should prefer it after the user supplies a reference measurement
 
 ### Phase 6 — Manufacturability gates ✅ DONE
 
