@@ -11,10 +11,13 @@ ENV DEBIAN_FRONTEND=noninteractive \
     HF_HUB_ENABLE_HF_TRANSFER=1
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    git build-essential python3.10 python3.10-venv python3-pip \
+    git build-essential ninja-build python3.10 python3.10-venv python3-pip \
     libgl1 libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/* \
     && ln -sf /usr/bin/python3.10 /usr/bin/python
+
+# torchmcubes needs both `ninja` (apt) and the `ninja` Python wheel.
+RUN pip install --no-cache-dir ninja setuptools wheel
 
 WORKDIR /workspace
 
