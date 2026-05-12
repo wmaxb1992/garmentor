@@ -7,6 +7,11 @@
     "directory": ".open-next/assets"
   },
   "vars": {
-    "CHAT_MODEL": "claude-opus-4-7"
+    "CHAT_MODEL": "claude-opus-4-7",
+    "RUNPOD_CHAT_BASE_URL": "https://api.runpod.ai/v2/d3ml39fgzt3ifw/openai/v1",
+    "RUNPOD_PATTERN_ENDPOINT_URL": "https://api.runpod.ai/v2/wvwn90kmfw7zit/runsync",
+    "RUNPOD_EDIT_ENDPOINT_URL": "https://api.runpod.ai/v2/g0livuufhouej4/runsync",
+    "RUNPOD_GENERATE_ENDPOINT_URL": "https://api.runpod.ai/v2/pxw9u8awh1qe3z/runsync",
+    "RUNPOD_CLOTH_SIM_ENDPOINT_URL": "https://api.runpod.ai/v2/0rh5q47l4vs9p8/runsync"
   }
 }
