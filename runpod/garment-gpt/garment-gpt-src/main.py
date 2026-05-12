@@ -314,8 +314,10 @@ class GarmentPredictor:
             "gpu_memory_utilization": 0.9,
             "rope_scaling": {"type": "dynamic", "factor": 4.0},
             "disable_log_stats": True,
+            "enforce_eager": True,
             "limit_mm_per_prompt": {"image": 4}
         }
+        print(f"[vllm] engine_args: {engine_args}", flush=True)
         self.llm_engine = LLM(**engine_args)
 
         self.sampling_params = SamplingParams(

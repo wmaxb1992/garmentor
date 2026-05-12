@@ -42,6 +42,8 @@ _pipe = None  # type: ignore[var-annotated]
 def _get_pipe():
     global _pipe
     if _pipe is None:
+        import time
+
         # Lazy import — diffusers + the right pipeline class for the model.
         if "flux" in MODEL_ID.lower():
             from diffusers import FluxImg2ImgPipeline as PipeClass
@@ -50,11 +52,29 @@ def _get_pipe():
             # SDXL / SDXL-Turbo image-to-image
             from diffusers import AutoPipelineForImage2Image as PipeClass
             dtype = DTYPE
-        _pipe = PipeClass.from_pretrained(
-            MODEL_ID,
-            torch_dtype=dtype,
-            variant="fp16" if dtype == torch.float16 else None,
-        )
+
+        # Retry model download up to 3 times — HuggingFace can be flaky on
+        # cold-start workers that haven't cached the weights yet.
+        last_err = None
+        for attempt in range(3):
+            try:
+                _pipe = PipeClass.from_pretrained(
+                    MODEL_ID,
+                    torch_dtype=dtype,
+                    variant="fp16" if dtype == torch.float16 else None,
+                )
+                break
+            except Exception as e:
+                last_err = e
+                wait = 5 * (attempt + 1)
+                print(f"[edit] model load attempt {attempt+1} failed: {e}. "
+                      f"Retrying in {wait}s...", flush=True)
+                time.sleep(wait)
+        else:
+            raise RuntimeError(
+                f"Failed to load {MODEL_ID} after 3 attempts: {last_err}"
+            ) from last_err
+
         _pipe.to(DEVICE)
         _pipe.set_progress_bar_config(disable=True)
     return _pipe
