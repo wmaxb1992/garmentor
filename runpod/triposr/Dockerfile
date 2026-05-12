@@ -40,7 +40,7 @@ ENV PYTHONPATH=/workspace/TripoSR
 
 RUN pip install --no-cache-dir \
     runpod==1.7.0 \
-    "huggingface_hub[hf_transfer]" \
+    "huggingface_hub[hf_transfer]<1.0" \
     rembg \
     onnxruntime
 
