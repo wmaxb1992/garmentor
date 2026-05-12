@@ -58,6 +58,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # Free disk space — the CUDA + PyTorch + model-weight images are large
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache
+          sudo apt-get clean
+          docker system prune -af
+          df -h /
+
       - uses: docker/login-action@v3
         with:
           registry: ${{ env.REGISTRY }}
