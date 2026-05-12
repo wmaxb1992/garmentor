@@ -34,18 +34,13 @@ RUN pip install --no-cache-dir \
     "huggingface_hub[hf_transfer]" \
     pillow
 
-# Pre-download SDXL-Turbo weights (~5 GB) into the HF cache at build time.
+# Pre-download SDXL-Turbo weights into the HF cache at build time.
+# Uses huggingface_hub.snapshot_download (no GPU or model loading required).
 # This avoids runtime HuggingFace downloads (which can fail on restricted pods)
-# and makes FlashBoot snapshots include the model — cold starts go from minutes
-# to seconds.
+# and makes FlashBoot snapshots include the model — cold starts become seconds.
 RUN python -c "\
-from diffusers import AutoPipelineForImage2Image; \
-import torch; \
-AutoPipelineForImage2Image.from_pretrained( \
-    'stabilityai/sdxl-turbo', \
-    torch_dtype=torch.float16, \
-    variant='fp16', \
-)"
+from huggingface_hub import snapshot_download; \
+snapshot_download('stabilityai/sdxl-turbo', ignore_patterns=['*.onnx', '*.onnx_data'])"
 
 COPY handler.py /workspace/handler.py
 
