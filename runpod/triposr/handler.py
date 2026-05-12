@@ -78,7 +78,7 @@ def handler(event: Dict[str, Any]) -> Dict[str, Any]:
         model = _get_model()
         with torch.no_grad():
             scene_codes = model([prepped], device=DEVICE)
-            meshes = model.extract_mesh(scene_codes, resolution=mc_res)
+            meshes = model.extract_mesh(scene_codes, resolution=mc_res, has_vertex_color=False)
         mesh = meshes[0]
     except Exception as e:
         return {"error": f"inference failed: {e!s}"}

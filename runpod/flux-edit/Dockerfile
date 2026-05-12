@@ -38,12 +38,9 @@ RUN pip install --no-cache-dir \
 # Uses huggingface_hub.snapshot_download (no GPU or model loading required).
 # This avoids runtime HuggingFace downloads (which can fail on restricted pods)
 # and makes FlashBoot snapshots include the model — cold starts become seconds.
-# The || true ensures the build succeeds even if disk is tight in CI;
-# the worker will download on first request if weights are missing.
 RUN python -c "\
 from huggingface_hub import snapshot_download; \
-snapshot_download('stabilityai/sdxl-turbo', ignore_patterns=['*.onnx', '*.onnx_data'])" \
-    || echo "WARNING: Could not pre-download model weights; will download at runtime"
+snapshot_download('stabilityai/sdxl-turbo', ignore_patterns=['*.onnx', '*.onnx_data'])"
 
 COPY handler.py /workspace/handler.py
 
