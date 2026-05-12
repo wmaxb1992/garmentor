@@ -38,13 +38,14 @@ RUN pip install --no-cache-dir \
 
 # Pre-download SDXL-Turbo fp16 weights at build time (REQUIRED — worker has
 # no outbound HuggingFace access at runtime on RunPod Serverless).
-# Only grab fp16 .safetensors + config JSON + tokenizer files.
-# Total ~5 GB. ONNX, full-precision .bin, and msgpack skipped.
+# Only grab the per-component fp16 safetensors (~6.9 GB), JSON configs, and
+# tokenizer files. SKIP the monolithic single-file checkpoints (sd_xl_turbo_1.0*)
+# and full-precision weights to stay under the CI disk limit.
 RUN python -c "\
 from huggingface_hub import snapshot_download; \
 snapshot_download('stabilityai/sdxl-turbo', \
-    allow_patterns=['*.safetensors','*.json','*.txt','tokenizer*','*.model'], \
-    ignore_patterns=['*.onnx','*.onnx_data','*.bin','*.msgpack'])"
+    allow_patterns=['*.fp16.safetensors','*.json','*.txt','tokenizer*','*.model'], \
+    ignore_patterns=['sd_xl_turbo_1.0*','*.onnx','*.onnx_data','*.bin','*.msgpack'])"
 
 COPY handler.py /workspace/handler.py
 
