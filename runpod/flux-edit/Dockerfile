@@ -34,13 +34,17 @@ RUN pip install --no-cache-dir \
     "huggingface_hub[hf_transfer]" \
     pillow
 
-# Pre-download SDXL-Turbo weights into the HF cache at build time.
-# Uses huggingface_hub.snapshot_download (no GPU or model loading required).
-# This avoids runtime HuggingFace downloads (which can fail on restricted pods)
-# and makes FlashBoot snapshots include the model — cold starts become seconds.
+# Pre-download SDXL-Turbo fp16 weights at build time.
+# Only grab .safetensors (fp16 variant), JSON configs, and tokenizer files —
+# skip ONNX and full-precision .bin to keep the image under the GHA disk limit.
+# If the download still fails (tight disk), the handler falls back to a runtime
+# download on first request; FlashBoot then snapshots the result for fast restarts.
 RUN python -c "\
 from huggingface_hub import snapshot_download; \
-snapshot_download('stabilityai/sdxl-turbo', ignore_patterns=['*.onnx', '*.onnx_data'])"
+snapshot_download('stabilityai/sdxl-turbo', \
+    allow_patterns=['*.safetensors','*.json','*.txt','tokenizer*','*.model'], \
+    ignore_patterns=['*.onnx','*.onnx_data','*.bin','*.msgpack'])" \
+    || echo 'WARN: weights not cached — will download on first request'
 
 COPY handler.py /workspace/handler.py
 
