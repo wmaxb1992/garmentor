@@ -39,6 +39,7 @@ RUN pip install --no-cache-dir --upgrade "pip<24" \
 ENV PYTHONPATH=/workspace/TripoSR
 
 RUN pip install --no-cache-dir \
+    "numpy<2" \
     runpod==1.7.0 \
     "huggingface_hub[hf_transfer]<1.0" \
     rembg \

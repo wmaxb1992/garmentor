@@ -30,27 +30,32 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /workspace
 
-# Pinned to the versions in upstream Garment-GPT requirements.txt.
+# torch 2.5.1 + cu121 — required by vllm 0.7.3.
 RUN pip install --no-cache-dir \
-    torch==2.4.0 torchvision==0.19.0 --index-url https://download.pytorch.org/whl/cu121
+    torch==2.5.1 torchvision==0.20.1 --index-url https://download.pytorch.org/whl/cu121
 
+# Pin transformers to 4.49.0 — the version the checkpoint was trained with.
+# vLLM 0.7.3 is the matching version for that era; 0.10.x fails model
+# inspection because the LLaVA config format changed after 4.49.
 RUN pip install --no-cache-dir \
-    vllm==0.10.2 \
-    transformers==4.56.2 \
+    vllm==0.7.3 \
+    transformers==4.49.0 \
     peft==0.15.0 \
     runpod==1.7.0 \
     huggingface_hub[hf_transfer] \
     fire \
     pyyaml \
     pillow \
-    numpy \
+    "numpy<2" \
     tqdm \
     einops \
     vector-quantize-pytorch \
     matplotlib
 
 # LLaMA-Factory is required for tokenizer/template helpers used by main.py.
-RUN git clone --depth 1 https://github.com/hiyouga/LLaMA-Factory.git /workspace/LLaMA-Factory \
+# Pin to v0.9.2 (March 2025) — matches the transformers 4.49 era when the
+# GarmentGPT checkpoint was trained. HEAD breaks with older transformers.
+RUN git clone --depth 1 --branch v0.9.2 https://github.com/hiyouga/LLaMA-Factory.git /workspace/LLaMA-Factory \
     && pip install --no-cache-dir -e /workspace/LLaMA-Factory
 
 # Copy the Garment-GPT source into the image.
