@@ -99,6 +99,7 @@ export function renderFlatPanel(
 
   const meshW = proj.maxX - proj.minX;
   const meshH = proj.maxY - proj.minY;
+  if (meshW <= 0 || meshH <= 0) return "";
   const usableW = panelWidth - PADDING * 2;
   const usableH = panelHeight - PADDING * 2 - 16;
   const scale = Math.min(usableW / meshW, usableH / meshH);

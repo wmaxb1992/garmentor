@@ -2,6 +2,7 @@
 
 import { useRef, useState } from "react";
 import { useWorkspace } from "@/lib/workspace-store";
+import type { GcdPattern } from "@/lib/garment-gpt";
 
 export function ProjectControls() {
   const {
@@ -129,7 +130,7 @@ export function ProjectControls() {
           drapeMetrics: m.drapeMetrics,
         });
         if (m.gcd && m.gcdUrl) {
-          attachPattern(m.id, m.gcdUrl, m.gcd as never);
+          attachPattern(m.id, m.gcdUrl, m.gcd as GcdPattern);
         }
       }
       if (payload.activeModelId) setActive(payload.activeModelId);

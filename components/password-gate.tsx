@@ -45,6 +45,11 @@ export function PasswordGate({ children }: { children: React.ReactNode }) {
       <div className="flex h-screen items-center justify-center bg-zinc-50 dark:bg-zinc-900">
         <div className="w-full max-w-sm space-y-6 rounded-lg border border-zinc-200 bg-white p-8 shadow-lg dark:border-zinc-800 dark:bg-zinc-950">
           <div className="text-center">
+            <img 
+              src="/logo.png" 
+              alt="Garmentor" 
+              className="mx-auto mb-4 h-16 w-auto"
+            />
             <h1 className="text-2xl font-bold text-zinc-900 dark:text-zinc-100">
               Garmentor
             </h1>

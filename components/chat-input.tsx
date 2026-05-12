@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import { ImageIcon, Send, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/lib/workspace-store";
@@ -24,8 +24,13 @@ export function ChatInput({ disabled, onSubmit, onStop, status }: ChatInputProps
 
   const isBusy = status === "submitted" || status === "streaming";
 
+  const revokePreviews = useCallback((urls: string[]) => {
+    urls.forEach((u) => URL.revokeObjectURL(u));
+  }, []);
+
   const onFiles = async (next: FileList | null) => {
     if (!next || next.length === 0) {
+      revokePreviews(previews);
       setFiles(undefined);
       setPreviews([]);
       setPendingImage(null, null);
@@ -34,6 +39,7 @@ export function ChatInput({ disabled, onSubmit, onStop, status }: ChatInputProps
     // Cap at MAX_FILES.
     const arr = Array.from(next).slice(0, MAX_FILES).filter((f) => f.type.startsWith("image/"));
     if (arr.length === 0) {
+      revokePreviews(previews);
       setFiles(undefined);
       setPreviews([]);
       return;
@@ -41,17 +47,25 @@ export function ChatInput({ disabled, onSubmit, onStop, status }: ChatInputProps
     const dt = new DataTransfer();
     arr.forEach((f) => dt.items.add(f));
     setFiles(dt.files);
-    setPreviews(arr.map((f) => URL.createObjectURL(f)));
+    revokePreviews(previews);
+    const newPreviews = arr.map((f) => URL.createObjectURL(f));
+    setPreviews(newPreviews);
     // setPendingImage tracks the first file for the mockup panel.
+    // Reuse the already-created preview URL instead of creating a second one.
     const first = arr[0];
-    const ab = await first.arrayBuffer();
-    setPendingImage(URL.createObjectURL(first), {
-      bytes: new Uint8Array(ab),
-      mediaType: first.type,
-    });
+    try {
+      const ab = await first.arrayBuffer();
+      setPendingImage(newPreviews[0], {
+        bytes: new Uint8Array(ab),
+        mediaType: first.type,
+      });
+    } catch {
+      // arrayBuffer() can reject if the File has been GC'd (rare edge case).
+    }
   };
 
   const clearFile = () => {
+    revokePreviews(previews);
     setFiles(undefined);
     setPreviews([]);
     setPendingImage(null, null);

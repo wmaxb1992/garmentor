@@ -63,9 +63,12 @@ export function rescalePatternByReference(
   if (panels.length === 0) return 1;
   let predicted = 0;
   if (ref.kind === "back_length") {
+    // Prefer back-facing panels (z < 0 in translation); fall back to all panels.
+    const backPanels = panels.filter((p) => (p.translation?.[2] ?? 0) < 0);
+    const target = backPanels.length > 0 ? backPanels : panels;
     let yMin = Infinity,
       yMax = -Infinity;
-    for (const p of panels) {
+    for (const p of target) {
       for (const [, y] of p.vertices) {
         if (y < yMin) yMin = y;
         if (y > yMax) yMax = y;

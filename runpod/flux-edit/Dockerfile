@@ -34,9 +34,18 @@ RUN pip install --no-cache-dir \
     "huggingface_hub[hf_transfer]" \
     pillow
 
-# Weights are NOT baked in — diffusers downloads FLUX.1-schnell (~24 GB) into
-# the HF cache on first request and reuses it for the worker's lifetime. Image
-# stays small enough to build on GitHub Actions free runners.
+# Pre-download SDXL-Turbo weights (~5 GB) into the HF cache at build time.
+# This avoids runtime HuggingFace downloads (which can fail on restricted pods)
+# and makes FlashBoot snapshots include the model — cold starts go from minutes
+# to seconds.
+RUN python -c "\
+from diffusers import AutoPipelineForImage2Image; \
+import torch; \
+AutoPipelineForImage2Image.from_pretrained( \
+    'stabilityai/sdxl-turbo', \
+    torch_dtype=torch.float16, \
+    variant='fp16', \
+)"
 
 COPY handler.py /workspace/handler.py
 

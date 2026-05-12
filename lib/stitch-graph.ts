@@ -14,7 +14,7 @@
  * dumb and stateless.
  */
 
-import { panelToPolyline } from "@/lib/gcd-to-dxf";
+import { panelToPolyline, edgeToPolylineIndices } from "@/lib/gcd-to-dxf";
 import type { GcdPattern, GcdPanel } from "@/lib/garment-gpt";
 
 const SAMPLES_PER_STITCH = 12;
@@ -58,10 +58,13 @@ function sampleAlongEdgeVertices(
   // Walk vertices from edgeStartIdx to edgeEndIdx, both inclusive, returning
   // n evenly-spaced vertex indices. If edgeEnd < edgeStart we wrap.
   const len = polyline.length;
+  if (len === 0 || n <= 0) return [];
+  if (edgeStartIdx === edgeEndIdx) return Array(n).fill(edgeStartIdx);
   const segmentVerts: number[] = [];
   let i = edgeStartIdx;
   segmentVerts.push(i);
-  while (i !== edgeEndIdx) {
+  let guard = len + 1;
+  while (i !== edgeEndIdx && guard-- > 0) {
     i = (i + 1) % len;
     segmentVerts.push(i);
   }
@@ -202,16 +205,22 @@ export function buildClothInput(pattern: GcdPattern): ClothInput {
     const edgeA = panelA.edges[a.edge];
     const edgeB = panelB.edges[b.edge];
     if (!edgeA || !edgeB) continue;
+    // Map GCD edge indices to polyline indices (accounting for curve sampling).
+    const mapA = edgeToPolylineIndices(panelA);
+    const mapB = edgeToPolylineIndices(panelB);
+    const rangeA = mapA[a.edge];
+    const rangeB = mapB[b.edge];
+    if (!rangeA || !rangeB) continue;
     const sA = sampleAlongEdgeVertices(
       polyA,
-      edgeA.endpoints[0],
-      edgeA.endpoints[1],
+      rangeA.startIdx,
+      rangeA.endIdx,
       SAMPLES_PER_STITCH,
     );
     const sB = sampleAlongEdgeVertices(
       polyB,
-      edgeB.endpoints[0],
-      edgeB.endpoints[1],
+      rangeB.startIdx,
+      rangeB.endIdx,
       SAMPLES_PER_STITCH,
     ).reverse(); // stitched edges run anti-parallel
     const n = Math.min(sA.length, sB.length);

@@ -1871,3 +1871,26 @@ Import traces:
  GET / 200 in 43ms (next.js: 3ms, application-code: 39ms)
  GET / 200 in 130ms (next.js: 7ms, application-code: 122ms)
  GET / 200 in 67ms (next.js: 13ms, application-code: 54ms)
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+✓ Compiled in 300ms
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+✓ Compiled in 42ms
+[browser] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+[browser] THREE.WebGLShadowMap: PCFSoftShadowMap has been deprecated. Using PCFShadowMap instead.
+ GET / 200 in 211ms (next.js: 65ms, application-code: 147ms)
+ GET / 200 in 17ms (next.js: 1705µs, application-code: 15ms)
+ GET / 200 in 13ms (next.js: 1906µs, application-code: 11ms)
+ GET / 200 in 33ms (next.js: 1647µs, application-code: 32ms)
+ GET / 200 in 13ms (next.js: 1112µs, application-code: 11ms)
+ GET / 200 in 109ms (next.js: 4ms, application-code: 105ms)
+ GET / 200 in 109ms (next.js: 12ms, application-code: 96ms)
+ GET / 200 in 87ms (next.js: 5ms, application-code: 82ms)
+ GET / 200 in 67ms (next.js: 1684µs, application-code: 65ms)
+ GET / 200 in 67ms (next.js: 13ms, application-code: 54ms)
+ GET / 200 in 67ms (next.js: 26ms, application-code: 41ms)
+ GET / 200 in 1200ms (next.js: 945ms, application-code: 255ms)
+error: script "dev" was terminated by signal SIGHUP (Terminal hung up)

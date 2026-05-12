@@ -71,11 +71,12 @@ export async function critique(input: {
   const apiKey = process.env.RUNPOD_API_KEY;
   const modelId = process.env.CHAT_MODEL ?? "qwen/qwen2.5-vl-7b-instruct";
   if (!baseURL) throw new Error("RUNPOD_CHAT_BASE_URL is not set");
+  if (!apiKey) throw new Error("RUNPOD_API_KEY is not set");
 
   const provider = createOpenAICompatible({
     name: "runpod",
     baseURL,
-    headers: apiKey ? { Authorization: `Bearer ${apiKey}` } : undefined,
+    headers: { Authorization: `Bearer ${apiKey}` },
   });
 
   const userPrompt =
@@ -90,11 +91,17 @@ export async function critique(input: {
       : "No reference measurement provided.\n\n") +
     `Decide if the pattern should be modified. Return JSON with should_modify, reason, deltas.`;
 
-  const result = await generateObject({
-    model: provider.chatModel(modelId),
-    schema: CriticOutput,
-    system: CRITIC_PROMPT,
-    prompt: userPrompt,
-  });
-  return result.object;
+  try {
+    const result = await generateObject({
+      model: provider.chatModel(modelId),
+      schema: CriticOutput,
+      system: CRITIC_PROMPT,
+      prompt: userPrompt,
+    });
+    return result.object;
+  } catch (err) {
+    throw new Error(
+      `Critic LLM call failed: ${err instanceof Error ? err.message : String(err)}`,
+    );
+  }
 }

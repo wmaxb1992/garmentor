@@ -352,7 +352,7 @@ function PanelRow({
   const [w, setW] = useState(width.toFixed(1));
   const [h, setH] = useState(height.toFixed(1));
   // Reset inputs when the underlying panel changes from outside (e.g. another panel edit re-laid out).
-  useMemo(() => {
+  useEffect(() => {
     setW(width.toFixed(1));
     setH(height.toFixed(1));
   }, [width, height]);

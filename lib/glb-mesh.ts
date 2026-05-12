@@ -29,8 +29,6 @@ function computeVertexNormals(
   indices: Uint32Array,
 ): Float32Array {
   const normals = new Float32Array(positions.length);
-  const ax = 0;
-  void ax;
   for (let i = 0; i < indices.length; i += 3) {
     const ia = indices[i] * 3;
     const ib = indices[i + 1] * 3;
@@ -129,7 +127,6 @@ export function extractMergedMesh(root: Object3D): MergedMesh {
     }
 
     const idx = g.getIndex();
-    const triCount = idx ? idx.count / 3 : vCount / 3;
     if (idx) {
       for (let i = 0; i < idx.count; i++) {
         indices[iOffset + i] = idx.getX(i) + vOffset;
@@ -143,7 +140,6 @@ export function extractMergedMesh(root: Object3D): MergedMesh {
     }
 
     meshSourceIds.push(mesh.id);
-    void triCount;
     vOffset += vCount;
   }
 

@@ -3,7 +3,7 @@
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import dynamic from "next/dynamic";
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { ChatInput } from "@/components/chat-input";
 import { cn } from "@/lib/utils";
 import { useWorkspace } from "@/lib/workspace-store";
@@ -78,8 +78,12 @@ type RefinePatternToolOutput =
   | { ok: false; error: string };
 
 export function Chat() {
+  const transport = useMemo(
+    () => new DefaultChatTransport({ api: "/api/chat" }),
+    [],
+  );
   const { messages, sendMessage, status, stop, error } = useChat({
-    transport: new DefaultChatTransport({ api: "/api/chat" }),
+    transport,
   });
 
   const scrollRef = useRef<HTMLDivElement>(null);

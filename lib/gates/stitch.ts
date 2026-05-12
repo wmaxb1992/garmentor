@@ -3,7 +3,7 @@
  * ±5% so the seam can actually close without buckling or gapping.
  */
 
-import { panelToPolyline } from "@/lib/gcd-to-dxf";
+import { panelToPolyline, edgeToPolylineIndices } from "@/lib/gcd-to-dxf";
 import type { GcdPattern } from "@/lib/garment-gpt";
 
 const TOLERANCE_PCT_DEFAULT = 5;
@@ -14,9 +14,11 @@ function edgeArcLength(
   endIdx: number,
 ): number {
   const n = poly.length;
+  if (n === 0 || startIdx === endIdx) return 0;
   let len = 0;
   let i = startIdx;
-  while (i !== endIdx) {
+  let guard = n + 1;
+  while (i !== endIdx && guard-- > 0) {
     const j = (i + 1) % n;
     const [x1, y1] = poly[i];
     const [x2, y2] = poly[j];
@@ -57,8 +59,14 @@ export function stitchCheck(
     if (!edgeA || !edgeB) continue;
     const polyA = panelToPolyline(panelA);
     const polyB = panelToPolyline(panelB);
-    const lenA = edgeArcLength(polyA, edgeA.endpoints[0], edgeA.endpoints[1]);
-    const lenB = edgeArcLength(polyB, edgeB.endpoints[0], edgeB.endpoints[1]);
+    // Map GCD edge indices to polyline indices (accounting for curve sampling).
+    const mapA = edgeToPolylineIndices(panelA);
+    const mapB = edgeToPolylineIndices(panelB);
+    const rangeA = mapA[a.edge];
+    const rangeB = mapB[b.edge];
+    if (!rangeA || !rangeB) continue;
+    const lenA = edgeArcLength(polyA, rangeA.startIdx, rangeA.endIdx);
+    const lenB = edgeArcLength(polyB, rangeB.startIdx, rangeB.endIdx);
     const avg = (lenA + lenB) / 2;
     if (avg === 0) continue;
     const mismatch = (Math.abs(lenA - lenB) / avg) * 100;

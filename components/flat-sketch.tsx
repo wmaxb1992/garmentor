@@ -1,7 +1,8 @@
 "use client";
 
-import { Suspense, useMemo } from "react";
-import { useGLTF } from "@react-three/drei";
+import { Suspense, useEffect, useMemo, useState } from "react";
+import * as THREE from "three";
+import { GLTFLoader } from "three-stdlib";
 import { extractMergedMesh } from "@/lib/glb-mesh";
 import { renderFlatSketchSVG } from "@/lib/flat-sketch";
 import { measureMesh, fmtCm } from "@/lib/mesh-measure";
@@ -12,9 +13,37 @@ type SketchData = {
   measurements: ReturnType<typeof measureMesh>;
 };
 
+/** Cache loaded scenes so repeated renders don't re-fetch. */
+const sceneCache = new Map<string, THREE.Group>();
+
 function FlatSketchInner({ model }: { model: Model & { glbUrl: string } }) {
-  const gltf = useGLTF(model.glbUrl) as unknown as { scene: import("three").Group };
-  const scene = gltf.scene;
+  const [scene, setScene] = useState<THREE.Group | null>(
+    () => sceneCache.get(model.glbUrl) ?? null,
+  );
+  const [loadError, setLoadError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (sceneCache.has(model.glbUrl)) {
+      setScene(sceneCache.get(model.glbUrl)!);
+      return;
+    }
+    let cancelled = false;
+    const loader = new GLTFLoader();
+    loader.load(
+      model.glbUrl,
+      (gltf) => {
+        if (cancelled) return;
+        sceneCache.set(model.glbUrl, gltf.scene);
+        setScene(gltf.scene);
+      },
+      undefined,
+      (err) => {
+        if (cancelled) return;
+        setLoadError(err instanceof Error ? err.message : String(err));
+      },
+    );
+    return () => { cancelled = true; };
+  }, [model.glbUrl]);
 
   const data = useMemo<SketchData | null>(() => {
     if (!scene) return null;
@@ -24,6 +53,22 @@ function FlatSketchInner({ model }: { model: Model & { glbUrl: string } }) {
     const measurements = measureMesh(merged.positions);
     return { svg, measurements };
   }, [scene, model.seams]);
+
+  if (loadError) {
+    return (
+      <div className="flex h-full items-center justify-center text-sm text-red-500">
+        Failed to load model: {loadError}
+      </div>
+    );
+  }
+
+  if (!scene) {
+    return (
+      <div className="flex h-full items-center justify-center text-sm text-zinc-500">
+        Loading model…
+      </div>
+    );
+  }
 
   if (!data) {
     return (

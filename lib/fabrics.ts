@@ -120,8 +120,12 @@ export function applyFabricToScene(
     }
     const original = originals.get(obj.uuid)!;
     const current = obj.material as THREE.Material | THREE.Material[];
-    if (current !== original && !Array.isArray(current)) {
-      current.dispose();
+    if (current !== original) {
+      if (Array.isArray(current)) {
+        current.forEach((m) => m.dispose());
+      } else {
+        current.dispose();
+      }
     }
     obj.material = preset.build ? preset.build() : original;
   });
@@ -136,8 +140,12 @@ export function restoreOriginalMaterials(
     const original = originals.get(obj.uuid);
     if (!original) return;
     const current = obj.material as THREE.Material | THREE.Material[];
-    if (current !== original && !Array.isArray(current)) {
-      current.dispose();
+    if (current !== original) {
+      if (Array.isArray(current)) {
+        current.forEach((m) => m.dispose());
+      } else {
+        current.dispose();
+      }
     }
     obj.material = original;
   });

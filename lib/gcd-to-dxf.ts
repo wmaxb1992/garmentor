@@ -115,6 +115,28 @@ export function panelToPolyline(panel: GcdPanel): Pt[] {
   return poly;
 }
 
+/**
+ * Build a mapping from each edge index to the polyline index range
+ * [startIdx, endIdx] (inclusive) produced by `panelToPolyline`.
+ *
+ * For edge `i`, `startIdx` is the polyline index corresponding to
+ * `edge.endpoints[0]`, and `endIdx` to `edge.endpoints[1]`.
+ */
+export function edgeToPolylineIndices(
+  panel: GcdPanel,
+): Array<{ startIdx: number; endIdx: number }> {
+  if (panel.edges.length === 0) return [];
+  const result: Array<{ startIdx: number; endIdx: number }> = [];
+  let cursor = 0; // polyline index of the current edge's start vertex
+  for (const edge of panel.edges) {
+    const count = flattenEdge(panel, edge).length;
+    const endIdx = cursor + count;
+    result.push({ startIdx: cursor, endIdx });
+    cursor = endIdx;
+  }
+  return result;
+}
+
 const UNITS = { mm: 1, cm: 10, in: 25.4 } as const;
 export type DxfUnit = keyof typeof UNITS;
 
@@ -136,7 +158,7 @@ export function gcdToDxf(pattern: GcdPattern, unit: DxfUnit = "mm"): string {
   const mmPerOut = UNITS[unit];
   const scale = mmPerSource / mmPerOut;
 
-  const order = pattern.pattern.panel_order.length
+  const order = pattern.pattern.panel_order?.length
     ? pattern.pattern.panel_order
     : Object.keys(pattern.pattern.panels);
 

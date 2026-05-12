@@ -8,22 +8,24 @@ import {
   OrbitControls,
   useGLTF,
 } from "@react-three/drei";
-import { Suspense, useEffect } from "react";
+import { Suspense, useMemo } from "react";
 import * as THREE from "three";
 
 function Model({ url }: { url: string }) {
   const { scene } = useGLTF(url);
 
-  useEffect(() => {
-    scene.traverse((obj) => {
+  const cloned = useMemo(() => {
+    const c = scene.clone(true);
+    c.traverse((obj) => {
       if (obj instanceof THREE.Mesh) {
         obj.castShadow = true;
         obj.receiveShadow = true;
       }
     });
+    return c;
   }, [scene]);
 
-  return <primitive object={scene} />;
+  return <primitive object={cloned} />;
 }
 
 export function GlbViewer({

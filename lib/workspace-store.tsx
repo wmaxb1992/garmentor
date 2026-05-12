@@ -13,17 +13,14 @@ import {
 import { nanoId } from "@/lib/utils";
 import type { GcdPattern } from "@/lib/garment-gpt";
 import type { FabricKey } from "@/lib/fabrics";
+import type { DrapeMetrics } from "@/lib/cloth-sim";
+
+export type { DrapeMetrics };
 
 export type Seam = {
   id: string;
   vertexIndices: number[];
   createdAt: number;
-};
-
-export type DrapeMetrics = {
-  maxStretch: number;
-  maxCompression: number;
-  meanStretch: number;
 };
 
 export type Model = {
@@ -223,20 +220,29 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     hydrated.current = true;
   }, []);
 
-  // Auto-save current project when state changes
+  // Auto-save current project when workspace state changes.
+  // We track currentProject via a ref to avoid an effect loop where
+  // setCurrentProject re-triggers this effect.
+  const currentProjectRef = useRef(currentProject);
+  currentProjectRef.current = currentProject;
+
   useEffect(() => {
-    if (!hydrated.current || !currentProject) return;
-    
+    if (!hydrated.current || !currentProjectRef.current) return;
+
     if (saveTimer.current) clearTimeout(saveTimer.current);
     saveTimer.current = setTimeout(() => {
+      const cp = currentProjectRef.current;
+      if (!cp) return;
       const updated: Project = {
-        ...currentProject,
+        ...cp,
         workspace: state,
         lastModified: Date.now(),
       };
       saveProject(updated);
+      // Update the ref (and state) without re-triggering this effect.
+      currentProjectRef.current = updated;
       setCurrentProject(updated);
-      
+
       // Update available projects list
       setAvailableProjects(prev => {
         const filtered = prev.filter(p => p.id !== updated.id);
@@ -246,11 +252,13 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         ].sort((a, b) => b.lastModified - a.lastModified);
       });
     }, SAVE_DEBOUNCE_MS);
-    
+
     return () => {
       if (saveTimer.current) clearTimeout(saveTimer.current);
     };
-  }, [state, currentProject]);
+  // Only re-run when workspace state changes, not when currentProject changes.
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state]);
 
   const addModel = useCallback<WorkspaceContextValue["addModel"]>((input) => {
     setState((prev) => {
@@ -388,7 +396,17 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
 
   const approvePendingImage = useCallback<WorkspaceContextValue["approvePendingImage"]>(
     async () => {
-      setState((prev) => ({ ...prev, isGenerating: true }));
+      // Mark the workspace as generating. The actual generation is driven by
+      // the chat route (the user sends a message and the LLM calls
+      // generate_3d_model / generate_pattern). This callback is a UI signal
+      // only — the `addModel` callback resets isGenerating to false when
+      // the result arrives.
+      setState((prev) => ({
+        ...prev,
+        isGenerating: true,
+        pendingImageUrl: null,
+        pendingImageData: null,
+      }));
     },
     [],
   );
@@ -429,32 +447,32 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
     const project = loadProject(id);
     if (!project) return;
 
-    setState(normalizeWorkspace(project.workspace));
-    setCurrentProject(project);
-    
-    // Update last modified
+    // Update last-modified timestamp and persist in one step.
     const updated = { ...project, lastModified: Date.now() };
     saveProject(updated);
+    setState(normalizeWorkspace(updated.workspace));
     setCurrentProject(updated);
   }, []);
 
   const deleteProjectCallback = useCallback((id: string) => {
     deleteProject(id);
     setAvailableProjects(prev => prev.filter(p => p.id !== id));
-    
-    if (currentProject?.id === id) {
+
+    // Use the ref to avoid a stale closure on currentProject.
+    if (currentProjectRef.current?.id === id) {
       setState(emptyWorkspace);
       setCurrentProject(null);
     }
-  }, [currentProject]);
+  }, []);
 
   const renameProject = useCallback((name: string) => {
-    if (!currentProject) return;
-    
-    const updated = { ...currentProject, name, lastModified: Date.now() };
+    const cp = currentProjectRef.current;
+    if (!cp) return;
+
+    const updated = { ...cp, name, lastModified: Date.now() };
     saveProject(updated);
     setCurrentProject(updated);
-    
+
     setAvailableProjects(prev => {
       const filtered = prev.filter(p => p.id !== updated.id);
       return [
@@ -462,7 +480,7 @@ export function WorkspaceProvider({ children }: { children: ReactNode }) {
         ...filtered,
       ].sort((a, b) => b.lastModified - a.lastModified);
     });
-  }, [currentProject]);
+  }, []);
 
   const value = useMemo<WorkspaceContextValue>(
     () => ({
