@@ -23,11 +23,13 @@ jobs:
     steps:
       - id: set
         run: |
+          # NOTE: triposr, flux-edit, and garment-gpt images now bake in model
+          # weights (10-25 GB) — too large for GitHub Actions free runners.
+          # Build those LOCALLY. Only cloth-sim is CI-buildable.
           INPUT="${{ github.event.inputs.workers || 'all' }}"
           if [ "$INPUT" = "all" ]; then
-            echo 'matrix=["triposr","flux-edit","cloth-sim","garment-gpt"]' >> "$GITHUB_OUTPUT"
+            echo 'matrix=["cloth-sim"]' >> "$GITHUB_OUTPUT"
           else
-            # Convert comma-separated to JSON array
             ARRAY=$(echo "$INPUT" | python3 -c "import sys,json; print(json.dumps([x.strip() for x in sys.stdin.read().split(',')]))")
             echo "matrix=$ARRAY" >> "$GITHUB_OUTPUT"
           fi

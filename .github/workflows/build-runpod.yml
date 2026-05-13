@@ -16,21 +16,16 @@ permissions:
   packages: write
 
 jobs:
+  # NOTE: pattern, flux-edit, and triposr images now bake in model weights
+  # and are 10-25 GB each — too large for GitHub Actions free runners.
+  # Build those LOCALLY (see Dockerfile header comments). Only cloth-sim
+  # (no model weights, ~2 GB) is small enough for CI.
   build:
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
-          - name: pattern
-            context: runpod/garment-gpt
-            image: garmentor-pattern
-          - name: flux-edit
-            context: runpod/flux-edit
-            image: garmentor-flux-edit
-          - name: triposr
-            context: runpod/triposr
-            image: garmentor-3d
           - name: cloth-sim
             context: runpod/cloth-sim
             image: garmentor-cloth-sim

@@ -2,10 +2,12 @@
 # Default model: stabilityai/sdxl-turbo (ungated). FLUX.1-schnell still
 # supported via EDIT_MODEL_ID env var (requires HF_TOKEN since it's gated).
 #
-# Build:
+# IMPORTANT: Build LOCALLY — the image is ~10 GB which exceeds GitHub
+# Actions free-runner disk limits. Run from your dev machine:
+#
 #   cd runpod/flux-edit
-#   docker build -t YOUR_DOCKERHUB/garmentor-flux-edit:latest .
-#   docker push YOUR_DOCKERHUB/garmentor-flux-edit:latest
+#   docker build -t ghcr.io/wmaxb1992/garmentor-flux-edit:latest .
+#   docker push ghcr.io/wmaxb1992/garmentor-flux-edit:latest
 
 FROM nvidia/cuda:12.1.1-cudnn8-runtime-ubuntu22.04
 
@@ -34,11 +36,16 @@ RUN pip install --no-cache-dir \
     pillow \
  && rm -rf /root/.cache/pip /tmp/*
 
-# Weights are NOT baked into the image — SDXL-Turbo fp16 is ~7 GB which
-# exceeds GitHub Actions free-runner disk limits during Docker build.
-# Instead, the handler downloads weights on first request (~30s with
-# hf_transfer). FlashBoot then snapshots the worker state, so subsequent
-# cold starts are instant without re-downloading.
+# Bake SDXL-Turbo fp16 weights into the image — RunPod workers cannot
+# reliably reach huggingface.co at runtime.
+RUN python -c "\
+from huggingface_hub import snapshot_download; \
+snapshot_download( \
+    'stabilityai/sdxl-turbo', \
+    local_dir='/workspace/models/sdxl-turbo', \
+    allow_patterns=['*.json', '*.txt', '*.safetensors', '*.fp16.*'], \
+    ignore_patterns=['*.bin', '*.ckpt', '*.msgpack', 'sdxl-turbo/'], \
+)" && rm -rf /root/.cache/huggingface/hub
 
 COPY handler.py /workspace/handler.py
 

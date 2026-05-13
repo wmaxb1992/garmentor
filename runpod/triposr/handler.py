@@ -28,7 +28,8 @@ from tsr.system import TSR
 from tsr.utils import resize_foreground
 
 
-MODEL_REPO = os.environ.get("TRIPOSR_MODEL", "stabilityai/TripoSR")
+# Default to local baked-in weights; fall back to HF repo name.
+MODEL_REPO = os.environ.get("TRIPOSR_MODEL", "/workspace/models/TripoSR")
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 
 _model: TSR | None = None

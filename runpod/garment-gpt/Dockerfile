@@ -1,9 +1,11 @@
 # GarmentGPT on RunPod Serverless.
 #
-# Build:
+# IMPORTANT: Build LOCALLY — the image is ~25 GB (includes baked-in model
+# weights) which exceeds GitHub Actions free-runner disk limits.
+#
 #   cd runpod/garment-gpt
-#   docker build -t YOUR_DOCKERHUB/garmentor-pattern:latest .
-#   docker push YOUR_DOCKERHUB/garmentor-pattern:latest
+#   docker build -t ghcr.io/wmaxb1992/garmentor-pattern:latest .
+#   docker push ghcr.io/wmaxb1992/garmentor-pattern:latest
 #
 # RunPod endpoint: set Docker image to the pushed tag, GPU type RTX 4090 / A100,
 # Min Workers 0, FlashBoot ✅, Idle Timeout 5s.
@@ -61,10 +63,25 @@ RUN git clone --depth 1 --branch v0.9.2 https://github.com/hiyouga/LLaMA-Factory
 # Copy the Garment-GPT source into the image.
 COPY garment-gpt-src /workspace/garment-gpt
 
-# Weights are NOT baked in — they download to /workspace/checkpoints on first
-# request and cache to the worker's local disk (or to a RunPod Network Volume
-# if one is mounted at /workspace/checkpoints). Image stays under ~5 GB so it
-# fits comfortably on GitHub Actions free runners.
+# Bake GarmentGPT inference weights into the image — RunPod workers cannot
+# reliably reach huggingface.co at runtime.  Skip DeepSpeed optimizer states,
+# RNG states, and training artifacts (~50 GB of unnecessary data).
+RUN python -c "\
+from huggingface_hub import snapshot_download; \
+snapshot_download( \
+    'ChimerAI/GarmentGPT', \
+    local_dir='/workspace/checkpoints', \
+    max_workers=8, \
+    ignore_patterns=[ \
+        '*/global_step*/*', \
+        '*/rng_state_*.pth', \
+        '*/scheduler.pt', \
+        '*/trainer_state.json', \
+        '*/training_args.bin', \
+        '*/zero_to_fp32.py', \
+        '*/latest', \
+    ], \
+)" && rm -rf /root/.cache/huggingface/hub
 
 COPY handler.py /workspace/handler.py
 

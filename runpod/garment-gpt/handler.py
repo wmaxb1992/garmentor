@@ -44,22 +44,21 @@ LLM_PATH = os.path.join(CHECKPOINT_DIR, "vlm", "checkpoint-12844")
 
 
 def _ensure_checkpoints() -> None:
-    """Download ChimerAI/GarmentGPT into CHECKPOINT_DIR on first call.
+    """Verify checkpoints exist (baked into Docker image at build time).
 
-    Only downloads inference-time files — skips DeepSpeed optimizer states,
-    training artifacts, and RNG states that add ~50 GB of unnecessary data.
+    Falls back to downloading from HuggingFace if not present, but this
+    will likely fail on RunPod workers that can't reach huggingface.co.
     """
-    # Use v2 marker — v1 downloaded everything including ~50 GB of optimizer
-    # states. If only the old marker exists, re-download selectively.
-    marker = os.path.join(CHECKPOINT_DIR, ".downloaded_v2")
-    if os.path.exists(marker):
+    expected = os.path.join(
+        CHECKPOINT_DIR, "vlm", "checkpoint-12844",
+        "model-00001-of-00003.safetensors",
+    )
+    if os.path.exists(expected):
+        print(f"[handler] Checkpoints found at {CHECKPOINT_DIR}", flush=True)
         return
 
-    # Clean stale v1 marker so we don't skip re-download.
-    old_marker = os.path.join(CHECKPOINT_DIR, ".downloaded")
-    if os.path.exists(old_marker):
-        os.remove(old_marker)
-
+    # Fallback: try downloading (unlikely to work on RunPod).
+    print(f"[handler] WARNING: {expected} not found — attempting download...", flush=True)
     os.makedirs(CHECKPOINT_DIR, exist_ok=True)
     import time
     from huggingface_hub import snapshot_download
@@ -72,13 +71,13 @@ def _ensure_checkpoints() -> None:
                 local_dir=CHECKPOINT_DIR,
                 max_workers=8,
                 ignore_patterns=[
-                    "*/global_step*/*",       # DeepSpeed optimizer states (~50 GB)
-                    "*/rng_state_*.pth",      # Per-rank RNG states
-                    "*/scheduler.pt",         # LR scheduler state
-                    "*/trainer_state.json",   # Trainer bookkeeping
-                    "*/training_args.bin",    # Training arguments
-                    "*/zero_to_fp32.py",      # DeepSpeed conversion script
-                    "*/latest",               # DeepSpeed checkpoint pointer
+                    "*/global_step*/*",
+                    "*/rng_state_*.pth",
+                    "*/scheduler.pt",
+                    "*/trainer_state.json",
+                    "*/training_args.bin",
+                    "*/zero_to_fp32.py",
+                    "*/latest",
                 ],
             )
             break
@@ -93,17 +92,10 @@ def _ensure_checkpoints() -> None:
             f"Failed to download checkpoints after 3 attempts: {last_err}"
         ) from last_err
 
-    # Verify the safetensors exist before marking as done.
-    expected = os.path.join(
-        CHECKPOINT_DIR, "vlm", "checkpoint-12844",
-        "model-00001-of-00003.safetensors",
-    )
     if not os.path.exists(expected):
         raise RuntimeError(
             f"Download appeared to succeed but {expected} is missing"
         )
-    with open(marker, "w") as f:
-        f.write("ok")
 CODEC_CONFIG = "/workspace/garment-gpt/configs/config_vq1024_resres_aug_decay0.99_q5_gcd_nl8_ld512.yaml"
 RT_CONFIG = "/workspace/garment-gpt/configs/config_rt_euler.yaml"
 DEVICE = os.environ.get("GARMENT_GPT_DEVICE", "cuda:0")

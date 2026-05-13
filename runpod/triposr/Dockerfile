@@ -1,8 +1,12 @@
 # TripoSR on RunPod Serverless — image → 3D garment mesh (GLB).
 #
+# IMPORTANT: Build LOCALLY — RunPod workers cannot reliably reach
+# huggingface.co at runtime, so weights are baked into the image.
+#
 # Build:
 #   cd runpod/triposr
-#   docker build -t YOUR_DOCKERHUB/garmentor-3d:latest .
+#   docker build -t ghcr.io/wmaxb1992/garmentor-3d:latest .
+#   docker push ghcr.io/wmaxb1992/garmentor-3d:latest
 
 # torchmcubes (used by TripoSR) is a CUDA-C++ extension and needs nvcc +
 # Python.h at build time, so we use the -devel base image, not -runtime.
@@ -45,6 +49,22 @@ RUN pip install --no-cache-dir \
     rembg \
     onnxruntime
 
-# Weights download on first request (~0.6 GB).
+# Bake TripoSR weights into the image (~0.6 GB) — RunPod workers cannot
+# reliably reach huggingface.co at runtime.
+RUN python -c "\
+from huggingface_hub import snapshot_download; \
+snapshot_download( \
+    'stabilityai/TripoSR', \
+    local_dir='/workspace/models/TripoSR', \
+)" && rm -rf /root/.cache/huggingface/hub
+
+# Pre-download rembg u2net model so it doesn't need network at runtime.
+RUN python -c "\
+from rembg import remove; \
+from PIL import Image; \
+img = Image.new('RGB', (64, 64), (128, 128, 128)); \
+remove(img); \
+print('rembg model cached')"
+
 COPY handler.py /workspace/handler.py
 CMD ["python", "-u", "/workspace/handler.py"]

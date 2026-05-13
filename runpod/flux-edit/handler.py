@@ -29,8 +29,10 @@ import torch
 from PIL import Image
 
 
+# Default to local baked-in weights; fall back to HF model ID for FLUX.
 MODEL_ID = os.environ.get(
-    "EDIT_MODEL_ID", os.environ.get("FLUX_MODEL_ID", "stabilityai/sdxl-turbo"),
+    "EDIT_MODEL_ID",
+    os.environ.get("FLUX_MODEL_ID", "/workspace/models/sdxl-turbo"),
 )
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 DTYPE = torch.float16
